@@ -1,0 +1,467 @@
+meta:
+  name: "Dat Nguyen"
+  fullName: "Nguyen Tran Tien Dat"
+  initials: "DN"
+  role:
+    en: "Principal Backend Architect — Erlang/OTP"
+    vi: "Kiến trúc sư Backend Cấp cao — Erlang/OTP"
+  tagline:
+    en: "Distributed Systems · Erlang/OTP · IoT/Telecom · Cloud Infra"
+    vi: "Hệ thống phân tán · Erlang/OTP · IoT/Viễn thông · Hạ tầng Cloud"
+  location:
+    en: "Remote"
+    vi: "Làm việc từ xa"
+  email: "datttn.work@gmail.com"
+  links:
+    github: "https://github.com/datnguyen-tt"
+    linkedin: "https://www.linkedin.com/in/datnguyen-t"
+    site: "https://datnguyen-tt.github.io"
+  pdf: "/Dat_Nguyen_CV.pdf"
+  availability:
+    en: "Open to remote senior and principal roles"
+    vi: "Sẵn sàng trao đổi về các vị trí senior và principal từ xa"
+
+hero:
+  headline:
+    en: "Erlang/OTP engineer — Ericsson IMS, Cisco NSO automation, and distributed IoT backends."
+    vi: "Kỹ sư Erlang/OTP — Ericsson IMS, tự động hóa Cisco NSO và backend IoT phân tán."
+  summary:
+    en: "10+ years building resilient backend platforms across IoT, telecom, network automation, and cloud systems. Leads architecture, delivery, observability, and production debugging for mission-critical services."
+    vi: "Hơn 10 năm xây dựng nền tảng backend bền vững cho IoT, viễn thông, tự động hóa mạng và hệ thống cloud. Dẫn dắt kiến trúc, triển khai, observability (khả năng quan sát hệ thống) và xử lý sự cố production cho các dịch vụ trọng yếu."
+  terminal:
+    - prompt: "1>"
+      input: "dat:whoami()."
+      output: "{principal_backend_architect, erlang_otp}"
+    - prompt: "2>"
+      input: "dat:skills()."
+      output: "[distributed_systems, fault_tolerance, iot, telecom]"
+    - prompt: "3>"
+      input: "dat:experience()."
+      output: "{ok, '10+ years'}"
+    - prompt: "4>"
+      input: "dat ! {hire, You}."
+      output: "{ok, ack}"
+
+stats:
+  - value: "10+"
+    label:
+      en: "Years in backend engineering"
+      vi: "Năm làm kỹ thuật backend"
+  - value: "3"
+    label:
+      en: "Employers: 5GenCare, PxD, DEK"
+      vi: "Nhà tuyển dụng: 5GenCare, PxD, DEK"
+  - value: "2"
+    label:
+      en: "Client engagements: Cisco, Ericsson"
+      vi: "Khách hàng/đối tác: Cisco, Ericsson"
+  - value: "1"
+    label:
+      en: "IEEE ATC publication"
+      vi: "Công bố tại IEEE ATC"
+
+about:
+  en:
+    - "Principal Backend Architect and Erlang/OTP engineer with 10+ years building fault-tolerant distributed systems for IoT, telecom, network automation, and cloud-native environments."
+    - "Designs resilient services, leads cross-functional delivery, and diagnoses complex concurrency and production issues. Brings hands-on depth across OTP architecture, telecom protocols, observability, data stores, and container-based infrastructure."
+  vi:
+    - "Kiến trúc sư Backend Cấp cao và kỹ sư Erlang/OTP với hơn 10 năm xây dựng hệ thống phân tán chịu lỗi cho IoT, viễn thông, tự động hóa mạng và môi trường cloud-native."
+    - "Thiết kế dịch vụ chịu lỗi, dẫn dắt đội ngũ liên chức năng và xử lý các vấn đề phức tạp về concurrency trên production. Có kinh nghiệm thực chiến về kiến trúc OTP, giao thức viễn thông, observability, data store và hạ tầng container."
+
+experience:
+  - id: "5gencare"
+    company: "5GenCare"
+    role:
+      en: "Principal Backend Architect — Erlang/OTP Engineer"
+      vi: "Kiến trúc sư Backend Cấp cao — Kỹ sư Erlang/OTP"
+    location:
+      en: "Hong Kong · Remote"
+      vi: "Hong Kong · Từ xa"
+    start: "2023-06"
+    end: null
+    remote: true
+    domain: "iot"
+    highlights:
+      en:
+        - "Architected and maintained a distributed IoT/AIoT backend with Erlang/OTP and Mnesia, supporting cloud telemetry and device management."
+        - "Designed fault-tolerant Erlang services and Prometheus monitoring for cloud telemetry workflows."
+        - "Led Docker deployments through GitLab CI for container-based backend releases."
+      vi:
+        - "Kiến trúc và duy trì backend IoT/AIoT phân tán bằng Erlang/OTP và Mnesia, phục vụ cloud telemetry và quản lý thiết bị."
+        - "Thiết kế dịch vụ Erlang chịu lỗi và hệ thống giám sát Prometheus cho các luồng cloud telemetry."
+        - "Dẫn dắt triển khai backend trên Docker qua GitLab CI cho các bản phát hành dùng container."
+    stack:
+      - "Erlang/OTP"
+      - "Mnesia"
+      - "Docker"
+      - "GitLab CI"
+      - "PostgreSQL"
+      - "Prometheus"
+      - "TLS/OpenSSL"
+
+  - id: "precision-development"
+    company: "Precision Development (PxD)"
+    role:
+      en: "Senior Full-Stack Engineer — Cloud Systems"
+      vi: "Kỹ sư Full-Stack Cao cấp — Hệ thống Cloud"
+    location:
+      en: "Newton, Massachusetts · Remote"
+      vi: "Newton, Massachusetts · Từ xa"
+    start: "2022-06"
+    end: "2023-06"
+    remote: true
+    domain: "telecom"
+    highlights:
+      en:
+        - "Built distributed voice and text services with Erlang and FreeSWITCH for low-connectivity environments."
+        - "Designed Flask and Cowboy APIs integrating USSD, IVR, SMS, WhatsApp, and Telegram communication flows."
+        - "Instrumented time-sensitive communication paths with metrics and tracing, then diagnosed production faults."
+      vi:
+        - "Xây dựng dịch vụ thoại và tin nhắn phân tán bằng Erlang và FreeSWITCH cho môi trường kết nối hạn chế."
+        - "Thiết kế API bằng Flask và Cowboy, tích hợp các luồng USSD, IVR, SMS, WhatsApp và Telegram."
+        - "Gắn metrics và tracing vào các luồng liên lạc nhạy cảm về thời gian để chẩn đoán sự cố production."
+    stack:
+      - "Erlang"
+      - "Python"
+      - "Flask"
+      - "Erlang Cowboy"
+      - "FreeSWITCH"
+      - "USSD/IVR/SMS"
+      - "WhatsApp/Telegram APIs"
+      - "Docker"
+      - "AWS"
+      - "PostgreSQL"
+
+  - id: "dek-vietnam-cisco"
+    company: "DEK Technologies Vietnam"
+    role:
+      en: "Erlang Consultant for Cisco NSO (via DEK Technologies)"
+      vi: "Tư vấn Erlang cho Cisco NSO (qua DEK Technologies)"
+    location:
+      en: "Ho Chi Minh City, Vietnam"
+      vi: "Thành phố Hồ Chí Minh, Việt Nam"
+    start: "2020-01"
+    end: "2022-06"
+    remote: true
+    domain: "network"
+    highlights:
+      en:
+        - "Delivered Cisco NSO network automation services with Erlang, YANG, NETCONF, and RESTCONF."
+        - "Mapped YANG network models into maintainable domain logic using Domain-Driven Design."
+        - "Resolved concurrency defects in Erlang network automation services, strengthening fault tolerance."
+      vi:
+        - "Phát triển dịch vụ tự động hóa mạng Cisco NSO bằng Erlang, YANG, NETCONF và RESTCONF."
+        - "Chuyển mô hình mạng YANG thành domain logic dễ bảo trì bằng Domain-Driven Design."
+        - "Xử lý lỗi concurrency trong dịch vụ tự động hóa mạng Erlang, củng cố khả năng chịu lỗi."
+    stack:
+      - "Erlang"
+      - "Python"
+      - "Cisco NSO"
+      - "YANG"
+      - "NETCONF"
+      - "RESTCONF"
+      - "Jenkins"
+      - "Emacs Lisp"
+      - "Bash"
+
+  - id: "dek-sweden-cisco"
+    company: "DEK Technologies Sweden"
+    role:
+      en: "Erlang Consultant for Cisco (via DEK Technologies)"
+      vi: "Tư vấn Erlang cho Cisco (qua DEK Technologies)"
+    location:
+      en: "Stockholm, Sweden"
+      vi: "Stockholm, Thụy Điển"
+    start: "2019-10"
+    end: "2019-12"
+    remote: false
+    domain: "network"
+    highlights:
+      en:
+        - "Integrated Erlang and YANG services across sites with Cisco's architecture team."
+        - "Led OTP design and BEAM optimization sessions, transferring runtime knowledge to the engineering team."
+      vi:
+        - "Tích hợp dịch vụ Erlang và YANG giữa nhiều địa điểm cùng đội ngũ kiến trúc Cisco."
+        - "Dẫn dắt các buổi chia sẻ về thiết kế OTP và tối ưu BEAM, chuyển giao kiến thức runtime cho đội ngũ kỹ thuật."
+    stack:
+      - "Erlang"
+      - "YANG"
+      - "C++"
+      - "NETCONF"
+      - "RESTCONF"
+      - "Jenkins"
+      - "Jira"
+
+  - id: "dek-vietnam-ericsson"
+    company: "DEK Technologies Vietnam"
+    role:
+      en: "Erlang Consultant for Ericsson IMS (via DEK Technologies)"
+      vi: "Tư vấn Erlang cho Ericsson IMS (qua DEK Technologies)"
+    location:
+      en: "Ho Chi Minh City, Vietnam"
+      vi: "Thành phố Hồ Chí Minh, Việt Nam"
+    start: "2016-11"
+    end: "2019-11"
+    remote: false
+    domain: "telecom"
+    highlights:
+      en:
+        - "Developed Ericsson IMS SBG components for media control and SIP, Diameter, and Megaco protocol handling."
+        - "Automated Jenkins CI pipelines for Erlang and Python telecom components, making build and test workflows repeatable."
+        - "Led testing across IMS protocol and media-control paths using Wireshark."
+      vi:
+        - "Phát triển thành phần Ericsson IMS SBG cho media control và xử lý các giao thức SIP, Diameter, Megaco."
+        - "Tự động hóa pipeline Jenkins CI cho các thành phần viễn thông Erlang và Python, chuẩn hóa luồng build và test."
+        - "Dẫn dắt kiểm thử các luồng giao thức IMS và media control bằng Wireshark."
+    stack:
+      - "Erlang"
+      - "Python"
+      - "IMS"
+      - "SIP"
+      - "Diameter"
+      - "Megaco"
+      - "Jenkins"
+      - "Wireshark"
+
+skills:
+  - id: "core"
+    name:
+      en: "Core Erlang/OTP"
+      vi: "Nền tảng Erlang/OTP"
+    strategy: "one_for_one"
+    children:
+      - "Erlang/OTP"
+      - "GenServer"
+      - "Supervision Trees"
+      - "Fault-tolerant OTP Design"
+      - "State Machines"
+      - "Hot Code Upgrade"
+      - "BEAM VM"
+      - "ETS/DETS"
+
+  - id: "distributed-architecture"
+    name:
+      en: "Distributed Systems & Architecture"
+      vi: "Hệ thống Phân tán & Kiến trúc"
+    strategy: "rest_for_one"
+    children:
+      - "Distributed Systems"
+      - "Distributed Erlang"
+      - "Actor Model"
+      - "Domain-Driven Design"
+      - "Cloud-native Microservices"
+      - "Mission-critical Systems"
+      - "High Availability"
+      - "Fault Tolerance"
+
+  - id: "protocols-telecom"
+    name:
+      en: "Protocols & Telecom"
+      vi: "Giao thức & Viễn thông"
+    strategy: "one_for_all"
+    children:
+      - "SIP"
+      - "Diameter"
+      - "Megaco"
+      - "IMS"
+      - "NETCONF"
+      - "RESTCONF"
+      - "YANG"
+      - "Cisco NSO"
+
+  - id: "data-stores"
+    name:
+      en: "Data Stores"
+      vi: "Lưu trữ Dữ liệu"
+    strategy: "one_for_one"
+    children:
+      - "Mnesia"
+      - "PostgreSQL"
+      - "ETS/DETS"
+      - "SQL"
+      - "CiscoDB"
+      - "NoSQL"
+
+  - id: "cloud-observability"
+    name:
+      en: "Cloud & Observability"
+      vi: "Cloud & Observability"
+    strategy: "rest_for_one"
+    children:
+      - "AWS"
+      - "Docker"
+      - "Docker Swarm"
+      - "Prometheus"
+      - "Grafana"
+      - "GitLab CI"
+      - "Jenkins"
+      - "Wireshark"
+
+  - id: "languages"
+    name:
+      en: "Programming Languages"
+      vi: "Ngôn ngữ Lập trình"
+    strategy: "one_for_one"
+    children:
+      - "Erlang/OTP"
+      - "Python"
+      - "Bash"
+      - "YANG"
+      - "C/C++"
+      - "Emacs Lisp"
+      - "JavaScript"
+      - "YAML"
+
+  - id: "testing-debugging"
+    name:
+      en: "Testing & Debugging"
+      vi: "Kiểm thử & Gỡ lỗi"
+    strategy: "one_for_all"
+    children:
+      - "Common Test"
+      - "Dialyzer"
+      - "DBG"
+      - "EDTS"
+      - "Lux Test Framework"
+      - "Tracing"
+      - "Production Debugging"
+
+projects:
+  - name: "erl-trace"
+    repo: "https://github.com/datnguyen-tt/erl-trace"
+    description:
+      en: "Original Emacs Lisp tool for inserting Erlang trace and debug logging with customizable output formats."
+      vi: "Công cụ Emacs Lisp tự phát triển để chèn trace và debug log Erlang với định dạng đầu ra tùy chỉnh."
+    tags:
+      - "Erlang"
+      - "Emacs Lisp"
+      - "Tracing"
+  - name: "erlang_ts"
+    repo: "https://github.com/datnguyen-tt/erlang_ts"
+    description:
+      en: "Original Emacs Lisp project providing an Erlang layer for Spacemacs with EDTS integration."
+      vi: "Dự án Emacs Lisp tự phát triển, cung cấp layer Erlang cho Spacemacs và tích hợp EDTS."
+    tags:
+      - "Erlang"
+      - "Spacemacs"
+      - "EDTS"
+  - name: "pingpong_application"
+    repo: "https://github.com/datnguyen-tt/pingpong_application"
+    description:
+      en: "Original Erlang application demonstrating ping-pong messaging between two processes."
+      vi: "Ứng dụng Erlang tự phát triển, minh họa cơ chế gửi nhận thông điệp giữa hai process."
+    tags:
+      - "Erlang"
+      - "Processes"
+      - "Message Passing"
+  - name: "dshell"
+    repo: "https://github.com/datnguyen-tt/dshell"
+    description:
+      en: "Original Emacs Lisp utility for creating, deleting, and switching shell-mode buffers."
+      vi: "Tiện ích Emacs Lisp tự phát triển để tạo, xóa và chuyển đổi các buffer shell-mode."
+    tags:
+      - "Emacs Lisp"
+      - "Shell"
+  - name: "prometheus-cowboy"
+    repo: "https://github.com/datnguyen-tt/prometheus-cowboy"
+    description:
+      en: "Fork of prometheus-erl/prometheus-cowboy for exposing Prometheus metrics through Cowboy and Cowboy 2."
+      vi: "Fork từ prometheus-erl/prometheus-cowboy, dùng để cung cấp Prometheus metrics qua Cowboy và Cowboy 2."
+    tags:
+      - "Erlang"
+      - "Prometheus"
+      - "Cowboy"
+  - name: "edts"
+    repo: "https://github.com/datnguyen-tt/edts"
+    description:
+      en: "Fork of sebastiw/edts, the Erlang Development Tool Suite for Emacs."
+      vi: "Fork từ sebastiw/edts, bộ công cụ phát triển Erlang dành cho Emacs."
+    tags:
+      - "Erlang"
+      - "Emacs Lisp"
+      - "EDTS"
+
+publications:
+  - title:
+      en: "Integrated Multi-standard system based on LR1110 for geolocation applications"
+      vi: "Hệ thống đa chuẩn tích hợp dựa trên LR1110 cho các ứng dụng định vị"
+    authors: "Bui Phung Huu Duc, Dat Tran Nguyen Tien, Phuong Binh Nguyen, Nguyen Minh Thien, Le Huy Trinh, Fabien Ferrero"
+    venue: "2021 International Conference on Advanced Technologies for Communications (ATC)"
+    year: 2021
+    doi: "10.1109/ATC52653.2021.9598262"
+    url: "https://doi.org/10.1109/ATC52653.2021.9598262"
+    bibtex: |-
+      @inproceedings{duc2021integrated,
+        author = {Bui Phung Huu Duc and Dat Tran Nguyen Tien and
+          Phuong Binh Nguyen and Nguyen Minh Thien and Le Huy Trinh
+          and Fabien Ferrero},
+        title = {Integrated Multi-standard system based on LR1110
+          for geolocation applications},
+        booktitle = {2021 International Conference on Advanced
+          Technologies for Communications (ATC)},
+        year = {2021},
+        pages = {45--50},
+        publisher = {IEEE},
+        doi = {10.1109/ATC52653.2021.9598262}
+      }
+
+education:
+  - degree:
+      en: "Master of Science in Information Technology"
+      vi: "Thạc sĩ Công nghệ Thông tin"
+    school: "University of Information Technology, Vietnam"
+    start: "2020-09"
+    end: "2022-05"
+    notes:
+      en:
+        - "Built a hybrid geolocation gateway using LoRaWAN and Semtech LR1110."
+        - "Co-authored an IEEE ATC 2021 paper on an LR1110-based integrated multi-standard geolocation system."
+        - "Developed a LoRaWAN relay virtual gateway addressing installation, coverage, cost, and energy constraints."
+      vi:
+        - "Xây dựng gateway định vị lai sử dụng LoRaWAN và Semtech LR1110."
+        - "Đồng tác giả bài báo IEEE ATC 2021 về hệ thống định vị đa chuẩn tích hợp dựa trên LR1110."
+        - "Phát triển LoRaWAN relay virtual gateway nhằm giải quyết các hạn chế về lắp đặt, vùng phủ, chi phí và năng lượng."
+  - degree:
+      en: "Bachelor of Engineering in Computer Engineering"
+      vi: "Kỹ sư Kỹ thuật Máy tính"
+    school: "University of Information Technology, Vietnam"
+    start: "2012-09"
+    end: "2016-06"
+    notes:
+      en:
+        - "Completed a final project on solar-powered LoRa sensor systems with predictive logic."
+        - "Completed an internship on resume parsing with C++ and regular expressions."
+      vi:
+        - "Hoàn thành đồ án về hệ thống cảm biến LoRa dùng năng lượng mặt trời với logic dự đoán."
+        - "Thực tập về phân tích CV bằng C++ và biểu thức chính quy."
+
+awards:
+  - title:
+      en: "First Prize — Student Scientific Research Projects"
+      vi: "Giải Nhất — Công trình Nghiên cứu Khoa học Sinh viên"
+    issuer: "University of Information Technology"
+    year: 2017
+  - title:
+      en: "Second Prize — Creative Ideas Grant"
+      vi: "Giải Nhì — Tài trợ Ý tưởng Sáng tạo"
+    issuer: "University of Information Technology"
+    year: 2015
+  - title:
+      en: "Student of 5 Merits Award"
+      vi: "Danh hiệu Sinh viên 5 Tốt"
+    issuer: "University of Information Technology"
+    year: 2014
+
+languages:
+  - name:
+      en: "Vietnamese"
+      vi: "Tiếng Việt"
+    level:
+      en: "Native"
+      vi: "Bản ngữ"
+  - name:
+      en: "English"
+      vi: "Tiếng Anh"
+    level:
+      en: "Upper-intermediate"
+      vi: "Trung cấp cao"

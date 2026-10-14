@@ -1,0 +1,178 @@
+#+TITLE: Dat Nguyen — CV Website v2: Requirements & Plan
+#+AUTHOR: Dat Nguyen
+#+DATE: 2026-10-14
+#+STARTUP: overview
+
+* 1. Mục tiêu
+- Thay thế site hiện tại ([[https://datnguyen-tt.github.io/]] — Jekyll al-folio)
+  bằng một CV website *chuyên nghiệp, ấn tượng, mang “chữ ký” Erlang/OTP*.
+- Nhà tuyển dụng nắm được trong *≤ 10 giây*: Dat là ai, làm gì, giỏi gì,
+  liên hệ thế nào.
+- Kỹ sư (hiring manager) thấy được *chiều sâu kỹ thuật* qua hiệu ứng mô phỏng
+  messaging / queue / supervision — không phải hiệu ứng trang trí vô nghĩa.
+- *Không dùng ảnh chân dung.* Thay bằng monogram/logo động "DN" dạng
+  process node.
+
+* 2. Đối tượng (personas)
+| Persona               | Cần gì                                   | Thời gian |
+|-----------------------+------------------------------------------+-----------|
+| Recruiter / HR        | Headline, năm KN, công ty, PDF CV, email | 10–30s    |
+| Hiring manager / Lead | Dự án, impact, stack, kiến trúc          | 2–5 phút  |
+| Engineer peer         | GitHub, OSS, chi tiết kỹ thuật, easter egg | tùy ý   |
+
+* 3. Nội dung (Information Architecture)
+Single-page, cuộn dọc, có anchor nav + Command Palette (Ctrl/⌘+K).
+1. *Hero* — tên, tagline "Distributed Systems · Erlang/OTP · IoT/Telecom ·
+   Cloud Infra", 3 CTA: =Download CV (PDF)=, =Contact=, =GitHub=.
+2. *About* — 3–4 câu, 4 số liệu nổi bật (10+ năm, uptime, msg/s, devices…).
+3. *Experience* — 5GenCare, PxD, DEK/Cisco NSO, Ericsson… mỗi mục có
+   impact bullets (số liệu cụ thể).
+4. *Skills* — dạng *supervision tree* (xem §5).
+5. *Projects / Open Source* — đóng góp Erlang/OTP ecosystem, repos.
+6. *Publications* — IEEE ATC 2021 (LR1110 geolocation), DOI, BibTeX copy.
+7. *Education* — M.Sc. IT, UIT.
+8. *Contact* — "send message" animation, email, LinkedIn, GitHub.
+9. Footer — build info dạng =node: dat@cv, otp: 27, uptime: …=.
+
+* 4. Yêu cầu chức năng (Functional)
+- FR-01 Song ngữ EN (mặc định) / VI, chuyển đổi không reload.
+- FR-02 Dark (mặc định) / Light theme; chuyển theme thể hiện như
+  *hot code upgrade* (=v1 → v2=).
+- FR-03 Nút tải *PDF CV ATS-friendly* (sinh từ cùng nguồn dữ liệu).
+- FR-04 Toàn bộ nội dung đến từ *một file dữ liệu* (=src/data/cv.yaml=)
+  để cập nhật CV không cần sửa code.
+- FR-05 Command palette (Ctrl/⌘+K): nhảy section, copy email, mở PDF,
+  bật "terminal mode".
+- FR-06 Terminal mode: shell giả lập =erl= với lệnh
+  =dat:whoami().=, =dat:skills().=, =dat:experience().=, =help().=,
+  =observer:start().= (easter egg).
+- FR-07 Print stylesheet: =Ctrl+P= ra CV sạch, không hiệu ứng.
+- FR-08 SEO: meta, OpenGraph image, JSON-LD =Person=, sitemap.
+
+* 5. Hiệu ứng chuyên ngành (Signature Effects)
+Nguyên tắc: *mỗi hiệu ứng phải kể một điều có thật về năng lực của Dat*.
+Tất cả tắt/giảm khi =prefers-reduced-motion=, pause khi ra khỏi viewport.
+
+| ID   | Section     | Hiệu ứng                                       | Ý nghĩa kỹ thuật              |
+|------+-------------+------------------------------------------------+-------------------------------|
+| E-01 | Hero        | *BEAM cluster live*: các node/process trao đổi  | Message passing, actor model  |
+|      |             | message (packet chạy trên cạnh). Click 1 node  | "Let it crash" + supervisor   |
+|      |             | → crash (đỏ) → supervisor restart (xanh)       | restart                       |
+| E-02 | Hero        | Typing terminal: =1> dat ! {hire, You}.=        | Erlang send operator          |
+| E-03 | About       | *Process mailbox FIFO*: message vào queue,      | Mailbox, selective receive,   |
+|      |             | pattern-match lấy ra; số liệu "đếm" khi dequeue | FIFO                          |
+| E-04 | Experience  | *Kafka-style commit log*: mỗi job là 1 record   | Append-only log, offset,      |
+|      |             | có =offset=, cuộn = consumer advance offset     | consumer group                |
+| E-05 | Skills      | *Supervision tree* tương tác: hover node hiện   | OTP supervision strategies    |
+|      |             | chi tiết; chọn one_for_one / one_for_all /      |                               |
+|      |             | rest_for_one để xem restart lan truyền          |                               |
+| E-06 | Projects    | *Stack LIFO*: card push/pop khi lọc/duyệt       | Stack semantics               |
+| E-07 | IoT block   | *MQTT pub/sub*: device publish telemetry →      | Broker, topics, QoS, IoT      |
+|      |             | broker → subscribers (topic wildcard =+/#=)     | (5GenCare)                    |
+| E-08 | Telecom     | Sequence diagram động: SMS/USSD/IVR flow        | Telecom signalling (PxD,      |
+|      |             | (MO → gateway → app → MT)                      | Ericsson)                     |
+| E-09 | Background  | *Backpressure / token bucket*: khi cuộn nhanh,  | Rate limiting, flow control   |
+|      |             | packet nền bị throttle, có "drop" nhẹ          |                               |
+| E-10 | Metrics     | *Observer dashboard* mini: sparkline msg/s,     | Observability, telemetry      |
+|      |             | reductions, process count (dữ liệu career)      |                               |
+| E-11 | Contact     | Gửi form → packet bay vào mailbox của Dat,      | Async send + ack              |
+|      |             | trả về ={ok, ack}=                              |                               |
+| E-12 | Netsplit    | (stretch) Partition 2 cluster rồi heal          | Distributed Erlang, CAP       |
+| E-13 | Easter egg  | Konami code / =observer:start().= → full-screen | Engineer delight              |
+|      |             | process view                                   |                               |
+
+Ràng buộc hiệu ứng:
+- Canvas 2D (hoặc OffscreenCanvas) — *không* WebGL nặng ở MVP.
+- Tối đa ~200 particle trên desktop, ~60 trên mobile; ổn định 60 fps.
+- Không chặn nội dung: text luôn đọc được khi JS tắt (progressive
+  enhancement).
+
+* 6. Thiết kế (Visual)
+- Phong cách: "engineering console" — tối, sạch, có lưới mờ; *không*
+  hacker-cliché lòe loẹt.
+- Màu: nền =#0B0F14=, accent Erlang red =#A90533=, phụ =#22D3EE= (message),
+  =#4ADE80= (ok/restart), =#F59E0B= (warning/backpressure). WCAG AA.
+- Font: Inter (UI) + JetBrains Mono (code/terminal); self-host, subset.
+- Monogram "DN" thay ảnh: node tròn có orbit message.
+- Responsive: 360px → 1920px; mobile-first.
+
+* 7. Yêu cầu phi chức năng (NFR)
+- NFR-01 Lighthouse (mobile): Performance ≥ 95, A11y ≥ 95, BP = 100,
+  SEO = 100.
+- NFR-02 LCP < 1.8s (4G), CLS < 0.05, INP < 200ms.
+- NFR-03 JS gửi xuống ≤ 80 KB gzip cho trang đầu.
+- NFR-04 WCAG 2.2 AA: keyboard nav, focus ring, aria cho canvas
+  (mô tả thay thế), contrast.
+- NFR-05 =prefers-reduced-motion= & toggle "Motion: on/off" thủ công.
+- NFR-06 Chạy tốt trên Chrome, Safari (iOS), Firefox bản mới nhất.
+- NFR-07 Không tracking bên thứ ba; analytics (nếu có) cookie-less.
+- NFR-08 Không lộ thông tin nhạy cảm (số điện thoại, địa chỉ) trên HTML.
+
+* 8. Tech stack (đề xuất)
+- *Astro* (static output) + *TypeScript* strict — 0 JS mặc định,
+  hiệu ứng là "islands" hydrate khi visible.
+- Vanilla Canvas 2D cho simulation (engine nhỏ tự viết: scheduler,
+  mailbox, supervisor) — nhẹ hơn và "đúng tinh thần" hơn dùng lib.
+- CSS: vanilla CSS + custom properties (không Tailwind để giữ bundle nhỏ).
+- PDF: Playwright render route =/cv-print= → =public/Dat_Nguyen_CV.pdf=
+  khi build.
+- Test: Vitest (engine logic), Playwright (E2E + visual regression),
+  Lighthouse CI, axe-core.
+- Deploy: GitHub Actions → GitHub Pages (=datnguyen-tt.github.io=).
+
+* 9. Đội agent & model
+Nguyên tắc: *người viết code và người review dùng model khác nhau* để tránh
+"điểm mù chung". Agent định nghĩa trong =.cursor/agents/=.
+
+| Agent           | Vai trò                                       | Model                         |
+|-----------------+-----------------------------------------------+-------------------------------|
+| cv-architect    | Lead/PM: kiến trúc, chia task, quality gate   | claude-opus-5-5-medium        |
+| cv-content      | Copywriter recruiter-focused, ATS, EN/VI      | gpt-5.6-sol-medium            |
+| cv-dev          | Frontend dev: Astro, layout, data, a11y       | claude-sonnet-5-5-high        |
+| cv-motion       | Creative dev: canvas simulations E-01..E-13   | gemini-4-argon-medium         |
+| cv-reviewer     | Code review: correctness, perf, security      | claude-fable-5-1-thinking-high |
+| cv-ui-qa        | UI QA: browser, screenshot, responsive, a11y  | grok-4.7-high-fast            |
+| cv-perf-auditor | Lighthouse/bundle/fps budget, CI checks       | composer-2.5-fast             |
+| cv-recruiter    | Đóng vai HR/hiring manager chấm "10s test"    | muse-spark-1.3-high           |
+
+Ma trận review chéo:
+- Code của =cv-dev= → =cv-reviewer= + =cv-ui-qa=.
+- Code của =cv-motion= → =cv-reviewer= + =cv-perf-auditor=.
+- Nội dung của =cv-content= → =cv-recruiter=.
+- Mọi gate cuối do =cv-architect= quyết (PASS / FIX / BLOCK).
+
+* 10. Kế hoạch thực hiện (phases & gates)
+** Phase 0 — Chuẩn bị (bạn + cv-content)
+- Thu thập dữ liệu thật: link LinkedIn/GitHub, số liệu impact, dự án OSS.
+- Gate G0: =cv.yaml= đầy đủ, =cv-recruiter= PASS "10s test" trên bản text.
+** Phase 1 — Skeleton (cv-architect → cv-dev)
+- Astro project, data layer, layout tất cả section, i18n, theme, print CSS.
+- Gate G1: chạy được không cần JS, Lighthouse ≥ 95, axe 0 lỗi.
+** Phase 2 — Simulation engine (cv-motion)
+- Engine core: =Node=, =Mailbox(FIFO)=, =Supervisor=, =Link=, scheduler
+  dùng =requestAnimationFrame=, unit test bằng Vitest.
+- Gate G2: test xanh, 60 fps với 200 particle, reduced-motion OK.
+** Phase 3 — Signature effects (cv-motion + cv-dev)
+- MVP: E-01, E-02, E-03, E-04, E-05, E-11.
+- Stretch: E-06..E-10, E-12, E-13, terminal mode, command palette.
+- Gate G3: cv-reviewer + cv-ui-qa + cv-perf-auditor đều PASS.
+** Phase 4 — Polish & content QA
+- PDF CV, OG image, SEO, copy cuối EN/VI.
+- Gate G4: cv-recruiter PASS, visual regression baseline.
+** Phase 5 — Deploy
+- GitHub Actions → Pages, kiểm tra production URL, rollback plan (giữ
+  site cũ ở branch =legacy-alfolio=).
+
+* 11. Definition of Done
+- [ ] Tất cả FR MVP hoạt động; NFR-01..05 đạt.
+- [ ] Không ảnh chân dung; monogram thay thế.
+- [ ] PDF CV tải được, ATS parse được (text, không ảnh).
+- [ ] Review chéo hoàn tất, không còn finding mức High.
+- [ ] Deploy lên =datnguyen-tt.github.io=.
+
+* 12. Câu hỏi mở (cần bạn trả lời)
+1. Link LinkedIn, GitHub chính xác? Có muốn công khai số điện thoại không?
+2. Số liệu impact thật (devices, msg/s, uptime, số khách hàng…)?
+3. Đóng góp OSS Erlang cụ thể (repo/PR)?
+4. Giữ domain =datnguyen-tt.github.io= hay dùng custom domain?
+5. Giữ các trang blog/bookshelf cũ không?

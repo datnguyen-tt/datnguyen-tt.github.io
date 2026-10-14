@@ -1,0 +1,261 @@
+---
+import { cv, type Lang } from "../data/cv";
+import { ui, SECTION_ORDER } from "../i18n/ui";
+import Monogram from "./Monogram.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const text = ui[lang];
+const other: Lang = lang === "en" ? "vi" : "en";
+const otherHref = other === "en" ? "/" : "/vi/";
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a class="brand no-url" href="#hero">
+      <Monogram initials={cv.meta.initials} size={32} />
+      <span class="brand__name">{cv.meta.name}</span>
+    </a>
+
+    <div class="controls">
+      <a
+        class="ctl lang no-url"
+        href={otherHref}
+        hreflang={other}
+        lang={other}
+        data-lang-switch
+        aria-label={`${text.lang.short} — ${text.lang.switchLabel}`}
+      >
+        {text.lang.short}
+      </a>
+      <button
+        class="ctl js-only"
+        type="button"
+        data-motion-toggle
+        aria-pressed="true"
+      >
+        <span>{text.motion.label}:</span>
+        <span class="m-state">
+          <span class="m-on">{text.motion.on}</span>
+          <span class="m-off">{text.motion.off}</span>
+        </span>
+      </button>
+      <button
+        class="ctl icon js-only"
+        type="button"
+        data-theme-toggle
+        data-to-light={text.theme.toLight}
+        data-to-dark={text.theme.toDark}
+        aria-label={text.theme.toLight}
+      >
+        <svg class="i-moon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path></svg>
+        <svg class="i-sun" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+      </button>
+    </div>
+
+    <nav class="site-nav" aria-label={text.navLabel} data-nav>
+      <button
+        class="menu-btn js-only"
+        type="button"
+        aria-expanded="false"
+        aria-controls="nav-list"
+        data-menu-btn
+      >
+        <svg class="i-open" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"></path></svg>
+        <svg class="i-close" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+        {text.menu}
+      </button>
+      <ul id="nav-list">
+        {
+          SECTION_ORDER.map((id) => (
+            <li>
+              <a class="no-url" href={`#${id}`}>{text.nav[id]}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    -webkit-backdrop-filter: blur(12px) saturate(1.4);
+    backdrop-filter: blur(12px) saturate(1.4);
+    border-bottom: 1px solid var(--border);
+  }
+  .site-header:has([data-open]) {
+    background: var(--bg);
+  }
+  .bar {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    grid-template-areas: "brand controls" "nav nav";
+    align-items: center;
+    column-gap: 1rem;
+    min-height: var(--header-h);
+  }
+  .brand {
+    grid-area: brand;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding-block: 0.5rem;
+    color: var(--text);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  .brand__name {
+    white-space: nowrap;
+  }
+  @media (max-width: 30rem) {
+    /* visually hidden, still the link's accessible name */
+    .brand__name {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+    }
+  }
+  .controls {
+    grid-area: controls;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .ctl {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    min-height: 2.25rem;
+    min-width: 2.25rem;
+    padding: 0.25rem 0.65rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: border-color 0.15s, background-color 0.15s;
+  }
+  .ctl:hover {
+    border-color: var(--text-muted);
+    background: var(--surface-2);
+    text-decoration: none;
+  }
+  .ctl.icon {
+    padding: 0.25rem;
+  }
+  .i-sun {
+    display: none;
+  }
+  :global(:root[data-theme="light"]) .i-sun {
+    display: block;
+  }
+  :global(:root[data-theme="light"]) .i-moon {
+    display: none;
+  }
+  .m-state {
+    color: var(--msg-text);
+  }
+  .m-off,
+  :global(html[data-motion="off"]) .m-on {
+    display: none;
+  }
+  :global(html[data-motion="off"]) .m-off {
+    display: inline;
+  }
+  .site-nav {
+    grid-area: nav;
+    padding-bottom: 0.25rem;
+  }
+  /* Without JS the links simply wrap; with JS they collapse on phones. */
+  .site-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.15rem;
+  }
+  .site-nav li a {
+    display: block;
+    padding: 0.55rem 0.7rem;
+    border-radius: 6px;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .site-nav li a:hover {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .site-nav li a[aria-current] {
+    color: var(--text);
+    box-shadow: inset 0 -2px 0 var(--accent-text);
+    border-radius: 0;
+  }
+  .menu-btn {
+    display: none;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    min-height: 2.5rem;
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .menu-btn .i-close,
+  .menu-btn[aria-expanded="true"] .i-open {
+    display: none;
+  }
+  .menu-btn[aria-expanded="true"] .i-close {
+    display: block;
+  }
+  @media (max-width: 37.5rem) {
+    :global(html.js) .menu-btn {
+      display: inline-flex;
+    }
+    :global(html.js) .site-nav ul {
+      display: none;
+    }
+    :global(html.js) .site-nav[data-open] ul {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-block: 0.5rem 0.25rem;
+    }
+    .site-nav li a {
+      padding-block: 0.7rem;
+    }
+  }
+
+  @media (min-width: 62rem) {
+    .bar {
+      grid-template-columns: auto 1fr auto;
+      grid-template-areas: "brand nav controls";
+    }
+    .site-nav {
+      padding: 0;
+      justify-self: center;
+    }
+  }
+</style>

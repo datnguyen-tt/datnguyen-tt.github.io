@@ -1,0 +1,126 @@
+---
+import { cv, t, type Lang } from "../data/cv";
+import { ui } from "../i18n/ui";
+import SectionHead from "./SectionHead.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const text = ui[lang];
+const s = text.sections.publications;
+---
+
+<section id="publications" class="section" aria-labelledby="publications-title">
+  <div class="container">
+    <SectionHead id="publications-title" index="05" title={s.title} hint={s.hint} />
+
+    <ul class="pubs">
+      {
+        cv.publications.map((pub, i) => (
+          <li>
+            <article class="card pub" aria-labelledby={`pub-${i}`}>
+              <p class="pub__venue">
+                <span class="badge">{pub.venue}</span>
+                <span>{pub.year}</span>
+              </p>
+              <h3 id={`pub-${i}`}>{t(pub.title, lang)}</h3>
+              <p class="pub__authors">{pub.authors}</p>
+              <p class="pub__actions">
+                <a class="btn no-url" href={pub.url} rel="noopener">
+                  {text.doi}: <code>{pub.doi}</code>
+                </a>
+                <button
+                  class="btn js-only no-print"
+                  type="button"
+                  data-copy-target={`bib-${i}`}
+                  data-done={text.copied}
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15V5a2 2 0 0 1 2-2h10"></path></svg>
+                  <span data-copy-label>{text.copyBibtex}</span>
+                </button>
+              </p>
+              <details class="pub__bib no-print">
+                <summary>{text.bibtex}</summary>
+                <pre><code id={`bib-${i}`}>{pub.bibtex}</code></pre>
+              </details>
+            </article>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .pubs {
+    display: grid;
+    gap: 1rem;
+  }
+  .pub {
+    display: grid;
+    gap: 0.75rem;
+    padding: clamp(1.1rem, 3vw, 1.75rem);
+    max-width: 52rem;
+  }
+  .pub__venue {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  h3 {
+    font-size: clamp(1.1rem, 2.4vw, 1.3rem);
+    font-weight: 700;
+  }
+  .pub__authors {
+    color: var(--text-muted);
+  }
+  .pub__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 0.25rem;
+  }
+  .pub__actions code {
+    font-size: 0.85em;
+    overflow-wrap: anywhere;
+  }
+  .pub__bib summary {
+    cursor: pointer;
+    width: fit-content;
+    color: var(--msg-text);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+  }
+  .pub__bib pre {
+    margin-top: 0.6rem;
+    padding: 1rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-elev);
+    font-size: 0.78rem;
+    line-height: 1.6;
+    overflow-x: auto;
+    tab-size: 2;
+  }
+
+  @media print {
+    .pub {
+      padding: 0;
+      border: 0;
+      gap: 0.2rem;
+    }
+    .pub__actions {
+      margin: 0;
+    }
+    .pub__actions .btn {
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      font-weight: 500;
+    }
+  }
+</style>

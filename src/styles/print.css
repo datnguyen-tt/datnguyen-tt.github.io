@@ -1,0 +1,113 @@
+/* Print: clean 1–2 page CV. Component-specific tweaks live in each
+   component's own @media print block. */
+@page {
+  size: A4;
+  margin: 10mm 13mm;
+}
+
+@media print {
+  :root,
+  :root[data-theme] {
+    color-scheme: light;
+    --bg: #fff;
+    --bg-elev: #fff;
+    --surface: #fff;
+    --surface-2: #f1f3f6;
+    --border: #cfd5dd;
+    --border-strong: #aab3bf;
+    --text: #111;
+    --text-muted: #3c4552;
+    --accent: #a90533;
+    --accent-text: #a90533;
+    --msg: #0e7490;
+    --msg-text: #0e5f75;
+    --ok: #15803d;
+    --warn: #b45309;
+    --shadow: none;
+  }
+
+  html {
+    font-size: 9.5pt;
+    scroll-padding-top: 0;
+  }
+  body {
+    background: #fff !important;
+    color: #111;
+    line-height: 1.38;
+    min-height: 0;
+  }
+  body::before,
+  .site-header,
+  .skip-link,
+  .fx,
+  [data-effect="beam-cluster"],
+  .no-print,
+  .js-only {
+    display: none !important;
+  }
+
+  .container {
+    max-width: none;
+    padding-inline: 0;
+  }
+  .section {
+    padding-block: 0.5rem;
+    border-top: 1px solid var(--border);
+    break-inside: auto;
+  }
+  .section-head {
+    margin-bottom: 0.6rem;
+    gap: 0;
+  }
+  .section-head h2 {
+    font-size: 1.15rem;
+  }
+  .section-head__kicker {
+    display: none;
+  }
+
+  .card {
+    box-shadow: none;
+    background: transparent;
+  }
+  .badge {
+    background: transparent;
+    border-color: var(--border-strong);
+    font-size: 0.7rem;
+  }
+  .chips {
+    gap: 0 0.35rem;
+  }
+  .chip {
+    padding: 0;
+    border: 0;
+    background: transparent;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+  .chip:not(:last-child)::after {
+    content: ",";
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  a[href^="http"]:not(.no-url)::after,
+  a[href^="mailto:"]:not(.no-url)::after {
+    content: " (" attr(href) ")";
+    font-family: var(--font-mono);
+    font-size: 0.78em;
+    color: var(--text-muted);
+    word-break: break-all;
+  }
+
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+  article,
+  li {
+    break-inside: avoid;
+  }
+}

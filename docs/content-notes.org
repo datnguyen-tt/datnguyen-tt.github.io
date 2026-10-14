@@ -1,0 +1,93 @@
+#+TITLE: CV Content Notes
+#+AUTHOR: Dat Nguyen
+#+DATE: 2026-10-14
+#+STARTUP: overview
+
+* Open questions
+
+** TODO(confirm) Profile
+- Confirm the preferred public location. The CV currently says "Remote"
+  because the source does not establish a current home city.
+- Confirm availability for remote senior/principal roles.
+- Confirm that "Principal Backend Architect — Erlang/OTP" is the preferred
+  public title in both languages.
+- Confirm which of the six selected GitHub repositories should be featured
+  most prominently.
+- Confirm the specific contribution made to the two featured forks:
+  =prometheus-erl/prometheus-cowboy= and =sebastiw/edts=.
+- Confirm whether the site should remain at
+  =https://datnguyen-tt.github.io=.
+
+* TODO(metric) Experience
+
+** 5GenCare
+- Number of managed devices or tenants.
+- Telemetry throughput or daily event volume.
+- Availability, incident reduction, or recovery-time improvement.
+- Deployment frequency or lead-time improvement from GitLab CI and Docker.
+
+** Precision Development (PxD)
+- Number of users, regions, or communication flows supported.
+- Message/call volume and service availability.
+- Production incident, latency, or resolution-time improvement from metrics
+  and tracing.
+- Connectivity constraints the system was designed to tolerate.
+
+** DEK Technologies Vietnam — Cisco NSO
+- Number of network services, device models, or customers supported.
+- Reliability improvement or defect reduction from concurrency fixes.
+- Delivery-time improvement from Domain-Driven Design or automation.
+- Scale of the Cisco NSO deployment.
+
+** DEK Technologies Sweden — Cisco
+- Number of sites, services, or engineers involved.
+- Delivery outcome from the cross-site integration.
+- Number of OTP/BEAM sessions delivered and audience size.
+- Performance improvement from BEAM optimization work.
+
+** DEK Technologies Vietnam — Ericsson
+- Traffic scale, node count, or deployment footprint for IMS SBG.
+- Reliability, latency, or defect improvement in protocol/media handling.
+- CI time or release-frequency improvement from automation.
+- Test coverage, escaped-defect reduction, or team scope.
+
+* TODO(desc) Projects
+- =erl-trace=: supported Erlang/Emacs versions and the workflow improvement
+  it provides.
+- =erlang_ts=: supported Spacemacs/EDTS versions and the owner's main
+  contribution.
+- =pingpong_application=: whether it is a learning example or production
+  pattern demonstration.
+- =dshell=: intended users and the workflow problem it solves.
+- =prometheus-cowboy=: changes made relative to the upstream fork and
+  whether it remains actively used.
+- =edts=: changes made relative to =sebastiw/edts= and whether it remains
+  actively used.
+- For every featured project, provide current status and one concrete outcome
+  where available.
+
+* Verified external metadata
+- GitHub repository metadata was checked on 2026-10-15. The first four
+  featured projects are marked non-forks by GitHub; =prometheus-cowboy= and
+  =edts= are forks of the upstream repositories named above.
+- Crossref metadata was checked for DOI
+  =10.1109/ATC52653.2021.9598262=. The exact title, six-author list, venue,
+  pages, publisher, and BibTeX fields in =cv.yaml= reflect that record.
+
+* Facts omitted or de-emphasized
+- Omitted "participated in cultural activities and team building" because it
+  does not demonstrate senior technical impact.
+- Omitted "space sustainability" and broad mission language because the
+  source does not connect it to delivered work.
+- Omitted speculative interests such as AI/ML, blockchain, edge computing,
+  5G, and "cutting-edge technologies" where no project evidence was given.
+- Omitted HTML and CSS from the language group to keep the supervision-tree
+  group within the eight-child limit and prioritize backend skills.
+- Omitted tool-only database clients PgAdmin and DBeaver from core skills.
+- Omitted generic security labels OAuth2 and RBAC from the skills tree;
+  TLS/OpenSSL remains attached to sourced experience.
+- Omitted professional-development courses and the data privacy training
+  because the requested schema has no certificate/training section.
+- Omitted duplicate degree certificates because both degrees are represented
+  under education.
+- No phone number or street address was included, in line with NFR-08.

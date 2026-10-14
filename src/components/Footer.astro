@@ -1,0 +1,43 @@
+---
+import { cv, type Lang } from "../data/cv";
+import { ui } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const built = new Date().toISOString().slice(0, 10);
+const year = built.slice(0, 4);
+---
+
+<footer class="footer">
+  <div class="container footer__row">
+    <p class="footer__node">
+      <code>node: dat@cv · otp: 27 · {ui[lang].built}: {built}</code>
+    </p>
+    <p class="footer__copy">© {year} {cv.meta.name}</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    padding-block: 2rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+  .footer__row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+  }
+  .footer__node code {
+    font-size: 0.82rem;
+  }
+  @media print {
+    .footer {
+      display: none; /* build info, not CV content */
+    }
+  }
+</style>

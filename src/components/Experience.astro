@@ -1,0 +1,224 @@
+---
+import { cv, t, type Lang } from "../data/cv";
+import { ui } from "../i18n/ui";
+import SectionHead from "./SectionHead.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const text = ui[lang];
+const s = text.sections.experience;
+const jobs = cv.experience;
+---
+
+<section id="experience" class="section" aria-labelledby="experience-title">
+  <div class="container">
+    <SectionHead id="experience-title" index="02" title={s.title} hint={s.hint} />
+
+    <!-- MOUNT: E-04 Kafka-style commit log (wrapper; scroll = offset advance) -->
+    <div class="log" data-effect="commit-log">
+      <ol class="log__list">
+        {
+          jobs.map((job, i) => (
+            <li class="entry" data-offset={jobs.length - 1 - i}>
+              <article class="card entry__card" aria-labelledby={`job-${job.id}`}>
+                <header class="entry__head">
+                  <p class="entry__meta">
+                    <span class="offset">
+                      {text.offset}: <b>{jobs.length - 1 - i}</b>
+                    </span>
+                    <span class="dates">
+                      <time datetime={job.start}>{job.start}</time>
+                      {" → "}
+                      {job.end ? <time datetime={job.end}>{job.end}</time> : <span>{text.present}</span>}
+                    </span>
+                  </p>
+                  <h3 id={`job-${job.id}`}>{job.company}</h3>
+                  <p class="entry__role">{t(job.role, lang)}</p>
+                  <p class="entry__where">
+                    <span>{t(job.location, lang)}</span>
+                    <span class="badge">{text.domain[job.domain]}</span>
+                    <span class="badge badge--mute">{job.remote ? text.remote : text.onsite}</span>
+                  </p>
+                </header>
+                <ul class="entry__list">
+                  {t(job.highlights, lang).map((h) => <li>{h}</li>)}
+                </ul>
+                <ul class="chips" aria-label={text.stack}>
+                  {job.stack.map((tech) => <li class="chip">{tech}</li>)}
+                </ul>
+              </article>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .log__list {
+    position: relative;
+    display: grid;
+    gap: 1.25rem;
+    padding-left: 1.5rem;
+  }
+  /* rail */
+  .log__list::before {
+    content: "";
+    position: absolute;
+    left: 0.3125rem;
+    top: 0.6rem;
+    bottom: 0.6rem;
+    width: 1px;
+    background: linear-gradient(var(--border-strong), var(--border-strong) 85%, transparent);
+  }
+  .entry {
+    position: relative;
+  }
+  /* record marker */
+  .entry::before {
+    content: "";
+    position: absolute;
+    left: -1.5rem;
+    top: 1.35rem;
+    width: 0.65rem;
+    height: 0.65rem;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 2px solid var(--msg);
+  }
+  .entry:first-child::before {
+    background: var(--accent-text);
+    border-color: var(--accent-text);
+  }
+  .entry__card {
+    padding: clamp(1.1rem, 3vw, 1.6rem);
+    display: grid;
+    gap: 1rem;
+  }
+  .entry__meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.25rem 1rem;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .offset {
+    color: var(--msg-text);
+  }
+  .offset b {
+    font-weight: 700;
+  }
+  h3 {
+    font-size: clamp(1.15rem, 2.4vw, 1.35rem);
+    font-weight: 700;
+  }
+  .entry__role {
+    margin-top: 0.15rem;
+    color: var(--text);
+    font-weight: 500;
+  }
+  .entry__where {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    margin-top: 0.5rem;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  .badge--mute {
+    color: var(--text-muted);
+    border-color: var(--border);
+  }
+  .entry__list {
+    display: grid;
+    gap: 0.5rem;
+  }
+  .entry__list li {
+    position: relative;
+    padding-left: 1.4rem;
+    color: var(--text);
+    font-size: 0.97rem;
+  }
+  /* diff-style "added line" marker */
+  .entry__list li::before {
+    content: "+";
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    color: var(--ok);
+  }
+
+  @media (min-width: 48rem) {
+    .log__list {
+      padding-left: 2.25rem;
+    }
+    .log__list::before {
+      left: 0.5625rem;
+    }
+    .entry::before {
+      left: -2.25rem;
+      width: 0.75rem;
+      height: 0.75rem;
+    }
+  }
+
+  @media print {
+    .log__list {
+      gap: 0.6rem;
+      padding-left: 0;
+    }
+    .log__list::before,
+    .entry::before {
+      display: none;
+    }
+    .entry__card {
+      padding: 0.5rem 0 0;
+      border: 0;
+      border-top: 1px dotted var(--border-strong);
+      border-radius: 0;
+      gap: 0.2rem;
+    }
+    .entry__head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: baseline;
+    }
+    .entry__head h3 {
+      grid-area: 1 / 1;
+    }
+    .entry__meta {
+      grid-area: 1 / 2;
+      margin: 0;
+      justify-content: flex-end;
+      gap: 0 0.75rem;
+    }
+    .entry__role,
+    .entry__where {
+      grid-column: 1 / -1;
+    }
+    .entry__where {
+      margin-top: 0.1rem;
+    }
+    .entry__list {
+      gap: 0.15rem;
+    }
+    .entry__list li {
+      font-size: 0.95em;
+    }
+    .entry__list li::before {
+      color: var(--text-muted);
+    }
+    .entry {
+      break-inside: avoid;
+    }
+  }
+</style>

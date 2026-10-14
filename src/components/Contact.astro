@@ -1,0 +1,185 @@
+---
+import { cv, t, type Lang } from "../data/cv";
+import { displayUrl, ui } from "../i18n/ui";
+import SectionHead from "./SectionHead.astro";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const text = ui[lang];
+const s = text.sections.contact;
+const { meta, hero } = cv;
+
+// The "send" line comes from the data: the terminal entry using `!`.
+const send = hero.terminal.find((l) => l.input.includes("!")) ?? hero.terminal.at(-1);
+---
+
+<section id="contact" class="section" aria-labelledby="contact-title">
+  <div class="container">
+    <SectionHead id="contact-title" index="07" title={s.title} hint={s.hint} />
+
+    <div class="contact">
+      <div class="contact__main">
+        <p class="contact__avail">{t(meta.availability, lang)}</p>
+        <ul class="methods">
+          <li class="card method">
+            <span class="method__label">{text.contactEmail}</span>
+            <a class="method__value no-url" href={`mailto:${meta.email}`}>{meta.email}</a>
+          </li>
+          <li class="card method">
+            <span class="method__label">{text.contactLinkedin}</span>
+            <a class="method__value no-url" href={meta.links.linkedin} rel="me noopener">
+              {displayUrl(meta.links.linkedin)}
+            </a>
+          </li>
+          <li class="card method">
+            <span class="method__label">{text.contactGithub}</span>
+            <a class="method__value no-url" href={meta.links.github} rel="me noopener">
+              {displayUrl(meta.links.github)}
+            </a>
+          </li>
+          <li class="card method">
+            <span class="method__label">{text.contactLocation}</span>
+            <span class="method__value">{t(meta.location, lang)}</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- MOUNT: E-11 send-message (packet flies into Dat's mailbox, {ok, ack}) -->
+      <div class="send no-print" data-effect="send-message">
+        <p class="send__bar">
+          <span class="send__dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span>dat@cv</span>
+        </p>
+        {
+          send && (
+            <pre class="send__body"><code><span class="p">{send.prompt}</span> <span class="i">{send.input}</span>{"\n"}<span class="o">{send.output}</span></code></pre>
+          )
+        }
+        <p class="send__cta">
+          <a class="btn btn--primary no-url" href={`mailto:${meta.email}`}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v12H3z"></path><path d="m3 7 9 6 9-6"></path></svg>
+            {meta.email}
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    display: grid;
+    gap: 2rem;
+    align-items: start;
+  }
+  .contact__avail {
+    margin-bottom: 1.25rem;
+    font-size: clamp(1.15rem, 2.4vw, 1.4rem);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    max-width: 32ch;
+  }
+  .methods {
+    display: grid;
+    gap: 0.6rem;
+  }
+  .method {
+    display: grid;
+    grid-template-columns: 6.5rem 1fr;
+    gap: 0.75rem;
+    align-items: baseline;
+    padding: 0.85rem 1.1rem;
+  }
+  .method__label {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .method__value {
+    font-weight: 600;
+    overflow-wrap: anywhere;
+  }
+
+  .send {
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    position: relative;
+  }
+  .send__bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+  }
+  .send__dots {
+    display: inline-flex;
+    gap: 0.35rem;
+  }
+  .send__dots i {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: var(--border-strong);
+  }
+  .send__dots i:first-child {
+    background: var(--msg);
+  }
+  .send__body {
+    margin: 0;
+    padding: 1.5rem 1.25rem 1rem;
+    font-size: clamp(1rem, 3.4vw, 1.4rem);
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+  }
+  .send__body .p {
+    color: var(--text-muted);
+  }
+  .send__body .i {
+    color: var(--msg-text);
+    font-weight: 600;
+  }
+  .send__body .o {
+    color: var(--ok);
+  }
+  .send__cta {
+    padding: 0 1.25rem 1.5rem;
+  }
+
+  @media (min-width: 62rem) {
+    .contact {
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+      gap: 3rem;
+    }
+  }
+
+  @media print {
+    .contact__avail {
+      display: none;
+    }
+    .methods {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.1rem 1.25rem;
+    }
+    .method:last-child {
+      display: none;
+    }
+    .method {
+      display: inline-flex;
+      gap: 0.4rem;
+      padding: 0;
+      border: 0;
+    }
+  }
+</style>

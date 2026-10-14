@@ -1,0 +1,125 @@
+---
+import "../styles/fonts.css";
+import "../styles/tokens.css";
+import "../styles/global.css";
+import "../styles/print.css";
+import { cv, t, type Lang } from "../data/cv";
+import { ui } from "../i18n/ui";
+import interLatin from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+import interVi from "@fontsource-variable/inter/files/inter-vietnamese-wght-normal.woff2?url";
+import monoLatin from "@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url";
+import monoVi from "@fontsource-variable/jetbrains-mono/files/jetbrains-mono-vietnamese-wght-normal.woff2?url";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const { meta, hero } = cv;
+const site = Astro.site ?? new URL(meta.links.site);
+
+const paths: Record<Lang, string> = { en: "/", vi: "/vi/" };
+const abs = (p: string) => new URL(p, site).href;
+const canonical = abs(paths[lang]);
+
+const title = `${meta.name} — ${t(meta.role, lang)}`;
+const description = t(hero.summary, lang);
+const ogImage = abs("/og.png");
+
+// Latin always; Vietnamese subsets only on /vi/ (they carry the diacritics).
+const fonts = [interLatin, monoLatin, ...(lang === "vi" ? [interVi, monoVi] : [])];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: meta.name,
+  alternateName: meta.fullName,
+  jobTitle: t(meta.role, lang),
+  description: t(hero.headline, lang),
+  url: canonical,
+  email: `mailto:${meta.email}`,
+  sameAs: [meta.links.github, meta.links.linkedin],
+  alumniOf: [
+    ...new Set(cv.education.map((e) => e.school)),
+  ].map((name) => ({ "@type": "CollegeOrUniversity", name })),
+  knowsAbout: cv.skills.find((g) => g.id === "core")?.children ?? [],
+};
+---
+
+<!doctype html>
+<html lang={ui[lang].htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={abs(paths.en)} />
+    <link rel="alternate" hreflang="vi" href={abs(paths.vi)} />
+    <link rel="alternate" hreflang="x-default" href={abs(paths.en)} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta name="author" content={meta.name} />
+    <meta name="theme-color" content="#0b0f14" />
+    {
+      fonts.map((href) => (
+        <link rel="preload" as="font" type="font/woff2" href={href} crossorigin="anonymous" />
+      ))
+    }
+
+    <meta property="og:type" content="profile" />
+    <meta property="og:site_name" content={meta.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === "vi" ? "vi_VN" : "en_US"} />
+    <meta property="og:locale:alternate" content={lang === "vi" ? "en_US" : "vi_VN"} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${meta.name} — ${t(meta.tagline, lang)}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd).replace(/</g, "\\u003c")} />
+
+    <!-- Theme + motion are resolved before first paint to avoid a flash.
+         Order: ?print > saved choice > OS preference. -->
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        var get = function (k) {
+          try {
+            return localStorage.getItem(k);
+          } catch (e) {
+            return null;
+          }
+        };
+        var mq = function (q) {
+          return matchMedia(q).matches;
+        };
+        var print = /[?&]print(&|=|$)/.test(location.search);
+        var theme = print ? "light" : get("theme");
+        if (theme !== "light" && theme !== "dark")
+          theme = mq("(prefers-color-scheme: light)") ? "light" : "dark";
+        var motion = print ? "off" : get("motion");
+        if (motion !== "on" && motion !== "off")
+          motion = mq("(prefers-reduced-motion: reduce)") ? "off" : "on";
+        d.dataset.theme = theme;
+        var tc = document.querySelector('meta[name="theme-color"]');
+        if (tc) tc.setAttribute("content", theme === "light" ? "#f6f7f9" : "#0b0f14");
+        d.dataset.motion = motion;
+        d.classList.add("js");
+        if (print) d.classList.add("print-mode");
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{ui[lang].skip}</a>
+    <slot />
+    <script>
+      import "../scripts/site";
+    </script>
+  </body>
+</html>
