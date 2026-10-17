@@ -12,12 +12,6 @@ const { meta, hero } = cv;
 ---
 
 <section id="hero" class="section hero" aria-labelledby="hero-title">
-  <!-- MOUNT: E-01 BEAM cluster. The wrapper sits behind the content
-       (z-index:-1, pointer-events:none) so text stays clickable. The effect
-       must give its <canvas> `pointer-events:auto`, `role="img"` and an
-       `aria-label` describing the simulation (NFR-04). -->
-  <div class="hero__fx" data-effect="beam-cluster"></div>
-
   <div class="container hero__grid">
     <div class="hero__copy">
       <p class="hero__tagline">{t(meta.tagline, lang)}</p>
@@ -45,18 +39,29 @@ const { meta, hero } = cv;
           </a>
         </li>
         <li>
-          <a class="btn no-url" href="#contact">{text.cta.contact}</a>
+          <a class="btn no-url" href={meta.links.linkedin} rel="me noopener">
+            {text.cta.linkedin}
+          </a>
         </li>
         <li>
-          <a class="btn" href={meta.links.github} rel="me noopener">
+          <a class="btn no-url" href={`mailto:${meta.email}`}>
+            {text.cta.email}
+          </a>
+        </li>
+        <li>
+          <a
+            class="btn btn--icon no-url"
+            href={meta.links.github}
+            rel="me noopener"
+            aria-label={text.cta.githubAria}
+          >
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.87-1.37-3.87-1.37-.53-1.34-1.29-1.7-1.29-1.7-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.18-3.09-.12-.29-.51-1.46.11-3.04 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.58.23 2.75.11 3.04.74.81 1.18 1.83 1.18 3.09 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"></path></svg>
-            {text.cta.github}
           </a>
         </li>
       </ul>
     </div>
 
-    <figure class="terminal no-print">
+    <figure class="terminal no-print" data-effect="terminal-typing">
       <figcaption class="terminal__bar">
         <span class="terminal__dots" aria-hidden="true"><i></i><i></i><i></i></span>
         <span>{text.terminalTitle}</span>
@@ -72,7 +77,42 @@ const { meta, hero } = cv;
         }
         <p class="ln"><span class="p">{`${hero.terminal.length + 1}>`}</span> <span class="cursor" aria-hidden="true"></span></p>
       </div>
+      <div class="terminal__live js-only no-print" data-terminal-live aria-hidden="true" translate="no">
+        <p class="terminal__log terminal__log--muted" data-log-seed>
+          {text.fx.terminalLivePlaceholder}
+        </p>
+      </div>
     </figure>
+  </div>
+
+  <!-- MOUNT: E-01 v2 Fault-tolerant BEAM mesh.
+       On >900px: full-hero connected 6-node mesh around `.hero__copy` and glass `.terminal`.
+       On ≤900px: own SSR-reserved band below `.hero__grid` with 4-node connected mesh and normal-flow hint below canvas. -->
+  <div
+    class="hero__fx no-print"
+    data-effect="beam-cluster"
+    data-aria={text.fx.beamAria}
+    data-escalated={text.fx.beamEscalated}
+    data-hint-desktop={text.fx.beamHint}
+    data-hint-mobile={text.fx.beamHintMobile}
+    data-hud-observer={text.fx.hudObserver}
+    data-hud-nodes={text.fx.hudNodes}
+    data-hud-msgs={text.fx.hudMsgs}
+    data-hud-restarts={text.fx.hudRestarts}
+    data-hud-netsplits={text.fx.hudNetsplits}
+    data-hud-sim={text.fx.hudSim}
+  >
+    <button type="button" class="hero__demo-btn js-only" data-beam-demo>
+      {text.fx.beamDemoBtn}
+    </button>
+    <output class="sr-only" aria-live="polite" data-beam-live></output>
+    <p class="beam-hud js-only" data-beam-hud aria-hidden="true">
+      {text.fx.hudObserver} · {text.fx.hudNodes} 6/6 · {text.fx.hudMsgs} 142 · {text.fx.hudRestarts} 0 · {text.fx.hudNetsplits} 0 · {text.fx.hudSim}
+    </p>
+    <p class="beam-hint js-only" data-beam-hint>
+      <span class="beam-hint__primary" data-beam-hint-primary>{text.fx.beamHint}</span>
+      <code class="beam-hint__sub"> · {text.fx.beamHintSub}</code>
+    </p>
   </div>
 </section>
 
@@ -82,6 +122,12 @@ const { meta, hero } = cv;
     overflow: clip;
     isolation: isolate;
     border-top: 0;
+  }
+  @media (min-width: 901px) {
+    .hero {
+      padding-top: 6rem;
+      padding-bottom: 6.8rem;
+    }
   }
   .hero::before {
     content: "";
@@ -100,6 +146,126 @@ const { meta, hero } = cv;
     z-index: -1;
     pointer-events: none;
   }
+  @media (max-width: 900px) {
+    .hero__fx {
+      display: none;
+    }
+    :global(html.js) .hero__fx {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 0.45rem;
+      position: relative;
+      inset: auto;
+      z-index: 0;
+      width: 100%;
+      height: 284px;
+      margin-top: 1.5rem;
+      padding-inline: var(--gutter);
+    }
+    :global(html.js) .hero__fx :global(canvas) {
+      order: 2;
+      width: 100% !important;
+      height: 204px !important;
+      flex: 0 0 204px;
+    }
+  }
+  .hero__demo-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: var(--gutter);
+    z-index: 5;
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--focus);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    pointer-events: auto;
+    cursor: pointer;
+    clip-path: inset(50%);
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .hero__demo-btn:focus,
+  .hero__demo-btn:focus-visible {
+    clip-path: none;
+    width: auto;
+    height: auto;
+    overflow: visible;
+  }
+  .beam-hud {
+    position: absolute;
+    left: var(--gutter);
+    bottom: 0.45rem;
+    margin: 0;
+    padding: 0.18rem 0.65rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface) 86%, transparent);
+    border: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: 0.69rem;
+    line-height: 1.4;
+    color: var(--text-muted);
+    pointer-events: none;
+    white-space: nowrap;
+    max-width: calc(100% - 2rem);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .beam-hint {
+    position: absolute;
+    right: var(--gutter);
+    bottom: 0.45rem;
+    margin: 0;
+    padding: 0.18rem 0.65rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    border: 1px solid var(--border);
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: var(--text);
+    pointer-events: none;
+  }
+  @media (max-width: 900px) {
+    .beam-hud {
+      position: static;
+      order: 1;
+      flex: 0 0 auto;
+      font-size: 0.68rem;
+      padding: 0.12rem 0.55rem;
+      background: transparent;
+      border-color: transparent;
+    }
+    .beam-hint {
+      position: static;
+      order: 3;
+      flex: 0 0 auto;
+      font-size: 0.73rem;
+      padding: 0.2rem 0.4rem;
+      background: transparent;
+      border-color: transparent;
+      color: var(--text-muted);
+      max-width: 100%;
+      text-align: center;
+    }
+    .beam-hint__sub {
+      display: none;
+    }
+  }
+  .beam-hint__primary {
+    font-weight: 500;
+  }
+  .beam-hint__sub {
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.71rem;
+  }
+
   .hero__grid {
     display: grid;
     gap: clamp(2rem, 5vw, 3.5rem);
@@ -107,10 +273,10 @@ const { meta, hero } = cv;
   }
   .hero__tagline {
     font-family: var(--font-mono);
-    font-size: 0.8rem;
-    color: var(--msg-text);
-    letter-spacing: 0.02em;
-    margin-bottom: 1.25rem;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.03em;
+    margin-bottom: 0.85rem;
   }
   .hero__id {
     display: flex;
@@ -125,31 +291,32 @@ const { meta, hero } = cv;
     line-height: 1.05;
   }
   .hero__role {
-    margin-top: 0.35rem;
-    color: var(--accent-text);
-    font-weight: 600;
-    font-size: clamp(0.95rem, 2vw, 1.15rem);
+    margin-top: 0.3rem;
+    color: var(--text);
+    font-weight: 500;
+    font-size: clamp(0.92rem, 2vw, 1.08rem);
   }
   .hero__headline {
-    font-size: clamp(1.35rem, 3vw, 1.85rem);
-    font-weight: 600;
-    line-height: 1.3;
-    letter-spacing: -0.02em;
-    max-width: 30ch;
+    font-size: clamp(1.05rem, 2.4vw, 1.42rem);
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.015em;
+    max-width: 34ch;
+    color: var(--text-muted);
   }
   .hero__summary {
-    margin-top: 1rem;
+    margin-top: 0.85rem;
     max-width: 58ch;
     color: var(--text-muted);
-    font-size: 1.03rem;
+    font-size: 0.98rem;
   }
   .hero__avail {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    margin-top: 1.5rem;
-    font-size: 0.9rem;
-    color: var(--text);
+    gap: 0.5rem;
+    margin-top: 1rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
   }
   .dot {
     flex: none;
@@ -171,26 +338,90 @@ const { meta, hero } = cv;
   .hero__cta {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.65rem;
-    margin-top: 1.75rem;
+    gap: 0.55rem;
+    margin-top: 1.25rem;
+  }
+  .hero__cta :global(.btn) {
+    min-height: 2.5rem;
+    padding: 0.45rem 0.95rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  .hero__cta :global(.btn--icon) {
+    padding: 0.45rem;
+    min-width: 2.5rem;
   }
 
-  /* Static fake Erlang shell */
+  @media (max-width: 600px) {
+    .hero {
+      padding-top: 1.25rem;
+    }
+    .hero__tagline {
+      margin-bottom: 0.55rem;
+      font-size: 0.68rem;
+    }
+    .hero__id {
+      gap: 0.65rem;
+      margin-bottom: 0.65rem;
+      align-items: center;
+    }
+    .hero__id :global(.monogram) {
+      width: 44px;
+      height: 44px;
+    }
+    h1 {
+      font-size: clamp(1.65rem, 8vw, 2.1rem);
+    }
+    .hero__role {
+      font-size: 0.88rem;
+      margin-top: 0.15rem;
+    }
+    .hero__headline {
+      font-size: 0.98rem;
+      max-width: none;
+    }
+    .hero__summary {
+      display: none;
+    }
+    .hero__avail {
+      margin-top: 0.55rem;
+      font-size: 0.8rem;
+    }
+    .hero__cta {
+      margin-top: 0.75rem;
+      gap: 0.45rem;
+    }
+    .hero__cta :global(.btn) {
+      min-height: 2.35rem;
+      padding: 0.4rem 0.8rem;
+      font-size: 0.85rem;
+    }
+  }
+
+  /* Glass panel Erlang shell — mesh links & packets remain visible behind it */
   .terminal {
     border: 1px solid var(--border-strong);
     border-radius: var(--radius);
-    background: color-mix(in srgb, var(--bg-elev) 92%, transparent);
+    background-color: var(--surface);
+    background: color-mix(in srgb, var(--surface) 76%, transparent);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     box-shadow: var(--shadow);
     overflow: hidden;
     min-width: 0;
+  }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .terminal {
+      background: var(--surface);
+    }
   }
   .terminal__bar {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.6rem 0.9rem;
+    padding: 0.55rem 0.9rem;
     border-bottom: 1px solid var(--border);
-    background: var(--surface);
+    background: color-mix(in srgb, var(--surface-2) 82%, transparent);
     color: var(--text-muted);
     font-family: var(--font-mono);
     font-size: 0.75rem;
@@ -210,18 +441,62 @@ const { meta, hero } = cv;
   }
   .terminal__body {
     margin: 0;
-    padding: 1.1rem 1.1rem 1.25rem;
-    font-size: clamp(0.78rem, 2.4vw, 0.9rem);
-    line-height: 1.75;
+    padding: 0.9rem 1.05rem 0.75rem;
+    font-size: clamp(0.76rem, 2.2vw, 0.86rem);
+    line-height: 1.65;
     font-family: var(--font-mono);
     overflow-wrap: anywhere;
     color: var(--text);
+  }
+  /* SSR-reserved live simulation log container (~4 lines desktop, ~3 lines mobile, zero CLS) */
+  :global(html.js) .terminal__live {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 0.1rem;
+    height: 4.1rem;
+    padding: 0.35rem 1.05rem 0.35rem;
+    border-top: 1px dashed var(--border);
+    background: color-mix(in srgb, var(--bg-elev) 68%, transparent);
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    line-height: 1.32;
+    overflow: hidden;
+  }
+  @media (max-width: 900px) {
+    :global(html.js) .terminal__live {
+      height: 3.15rem;
+    }
+  }
+  .terminal__live :global(.terminal__log) {
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--text);
+  }
+  .terminal__live :global(.terminal__log--muted) {
+    color: var(--text-muted);
+  }
+  .terminal__live :global(.terminal__log--err) {
+    color: var(--accent-text);
+  }
+  .terminal__live :global(.terminal__log--ok) {
+    color: var(--ok);
+  }
+  .terminal__live :global(.terminal__log--warn) {
+    color: var(--warn);
+  }
+  /* L15: prevent initial flash before typing starts while keeping exact layout height */
+  :global(html.terminal-typing-init) .terminal__body .ln:not(:first-child),
+  :global(html.terminal-typing-init) .terminal__body .ln:first-child .i {
+    visibility: hidden;
   }
   .terminal__body .ln {
     margin: 0;
   }
   .terminal__body .ln.o {
-    margin-bottom: 0.45rem;
+    margin-bottom: 0.35rem;
   }
   .terminal__body .p {
     color: var(--text-muted);
@@ -258,6 +533,10 @@ const { meta, hero } = cv;
     }
     .hero::before {
       display: none;
+    }
+    .terminal {
+      background: var(--surface);
+      backdrop-filter: none;
     }
     .hero__id {
       margin-bottom: 0.5rem;
