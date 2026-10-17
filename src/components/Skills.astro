@@ -1,5 +1,5 @@
 ---
-import { cv, t, type Lang } from "../data/cv";
+import { cv, STRATEGIES, t, type Lang } from "../data/cv";
 import { ui } from "../i18n/ui";
 import SectionHead from "./SectionHead.astro";
 
@@ -13,10 +13,48 @@ const s = text.sections.skills;
 
 <section id="skills" class="section" aria-labelledby="skills-title">
   <div class="container">
-    <SectionHead id="skills-title" index="03" title={s.title} hint={s.hint} />
+    <SectionHead
+      id="skills-title"
+      index="03"
+      title={s.title}
+      hint={s.hint}
+      hintSub={s.hintSub}
+    />
 
-    <!-- MOUNT: E-05 supervision tree (wrapper around the semantic list) -->
-    <div class="tree" data-effect="supervision-tree">
+    <!-- MOUNT: E-05 supervision tree (SSR console + global strategy control pre-rendered for 0 CLS) -->
+    <div
+      class="tree"
+      data-effect="supervision-tree"
+      data-restarted-prefix={text.fx.supRestartedPrefix}
+      data-restarted-unit={text.fx.supRestartedUnit}
+      data-escalated={text.fx.supEscalated}
+    >
+      <div class="sup-console js-only no-print">
+        <div
+          class="strategy-picker"
+          role="radiogroup"
+          aria-label={text.fx.supStrategyControl}
+        >
+          <span class="strategy-picker__label">{text.fx.supStrategyControl}:</span>
+          <label class="strategy-opt">
+            <input type="radio" name="sup-global-strategy" value="as_designed" checked />
+            <span>{text.fx.supAsDesigned}</span>
+          </label>
+          {
+            STRATEGIES.map((strat) => (
+              <label class="strategy-opt">
+                <input type="radio" name="sup-global-strategy" value={strat} />
+                <span>{strat}</span>
+              </label>
+            ))
+          }
+        </div>
+        <output class="sup-console__log" aria-live="polite" data-sup-output>
+          <span class="sup-console__primary" data-sup-primary>{text.fx.supHint}</span>
+          <code class="sup-console__sub" data-sup-sub>{text.fx.supIdle}</code>
+        </output>
+      </div>
+
       <ul class="tree__root">
         <li>
           <p class="node node--root">
@@ -34,7 +72,13 @@ const s = text.sections.skills;
                     </code>
                   </p>
                   <ul class="workers">
-                    {group.children.map((w) => <li class="worker">{w}</li>)}
+                    {group.children.map((w) => (
+                      <li class="worker">
+                        <button type="button" class="worker__btn">
+                          {w}
+                        </button>
+                      </li>
+                    ))}
                   </ul>
                 </li>
               ))
@@ -128,23 +172,116 @@ const s = text.sections.skills;
   }
   .worker {
     display: inline-flex;
+  }
+  .worker__btn {
+    display: inline-flex;
     align-items: center;
     gap: 0.45rem;
     padding: 0.15rem 0.65rem 0.15rem 0.55rem;
     border: 1px solid var(--border);
     border-radius: 999px;
     background: var(--surface-2);
+    color: var(--text);
     font-family: var(--font-mono);
     font-size: 0.78rem;
     line-height: 1.6;
+    cursor: pointer;
+    transition: border-color 0.15s, background-color 0.15s, color 0.15s, transform 0.15s;
   }
   /* green dot = process alive */
-  .worker::before {
+  .worker__btn::before {
     content: "";
     width: 0.4rem;
     height: 0.4rem;
     border-radius: 50%;
     background: var(--ok);
+    transition: background-color 0.15s, transform 0.15s;
+  }
+  .worker__btn:hover {
+    border-color: var(--msg);
+  }
+  .worker:global(.is-crashed) .worker__btn {
+    border-color: var(--accent-text);
+    background: color-mix(in srgb, var(--accent) 24%, var(--surface-2));
+    color: var(--accent-text);
+    transform: translateY(1px);
+  }
+  .worker:global(.is-crashed) .worker__btn::before {
+    background: var(--accent-text);
+  }
+  .worker:global(.is-restarted) .worker__btn {
+    border-color: var(--ok);
+    background: color-mix(in srgb, var(--ok) 18%, var(--surface-2));
+  }
+
+  .sup-console {
+    display: grid;
+    gap: 0.55rem;
+    margin-bottom: 1.25rem;
+  }
+  .sup-console__log {
+    display: grid;
+    gap: 0.2rem;
+    padding: 0.55rem 0.85rem;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+  .sup-console__primary {
+    font-size: 0.86rem;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .sup-console__sub {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .strategy-picker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.78rem;
+  }
+  .strategy-picker__label {
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-right: 0.2rem;
+  }
+  .strategy-opt {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.15rem 0.55rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--surface-2);
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    cursor: pointer;
+    user-select: none;
+  }
+  .strategy-opt:has(input:checked) {
+    border-color: var(--msg);
+    color: var(--msg-text);
+    background: color-mix(in srgb, var(--msg) 12%, var(--surface));
+  }
+  .strategy-opt:has(input:focus-visible) {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+  .strategy-opt input {
+    margin: 0;
+    accent-color: var(--msg);
+    width: 0.7rem;
+    height: 0.7rem;
   }
 
   @media (min-width: 48rem) {
@@ -186,11 +323,21 @@ const s = text.sections.skills;
       margin-right: 0.35rem;
       font-weight: 700;
     }
-    .node__name::after {
-      content: ":";
-    }
+    /* L12: keep localized strategy badge visible in print */
     .strategy {
-      display: none;
+      display: inline;
+      border: 0;
+      padding: 0;
+      margin-left: 0.25rem;
+      color: var(--text-muted);
+      font-weight: 400;
+      font-size: 0.85em;
+    }
+    .strategy::before {
+      content: "(";
+    }
+    .strategy::after {
+      content: "):";
     }
     .workers {
       display: inline;
@@ -200,13 +347,16 @@ const s = text.sections.skills;
     }
     .worker {
       display: inline;
+    }
+    .worker__btn {
+      display: inline;
       padding: 0;
       border: 0;
       background: none;
       font-family: var(--font-sans);
       font-size: 1em;
     }
-    .worker::before {
+    .worker__btn::before {
       display: none;
     }
     .worker:not(:last-child)::after {
