@@ -1,30 +1,50 @@
 #+TITLE: CV Content Notes
 #+AUTHOR: Dat Nguyen
-#+DATE: 2026-10-14
+#+DATE: 2026-10-15
 #+STARTUP: overview
 
-* Open questions
+* Changelog (2026-10-15, cv-content)
 
-** TODO(confirm) Profile
-- Confirm the preferred public location. The CV currently says "Remote"
-  because the source does not establish a current home city.
-- Confirm availability for remote senior/principal roles.
-- Confirm that "Principal Backend Architect — Erlang/OTP" is the preferred
-  public title in both languages.
-- Confirm which of the six selected GitHub repositories should be featured
-  most prominently.
-- Confirm the specific contribution made to the two featured forks:
-  =prometheus-erl/prometheus-cowboy= and =sebastiw/edts=.
-- Confirm whether the site should remain at
-  =https://datnguyen-tt.github.io=.
+- =meta.role=: public title → Senior Erlang/OTP Engineer · Backend
+  Architecture (EN/VI); 5GenCare experience keeps Principal title.
+- Hero: domain headline (no employer names); humble 2-sentence summary;
+  four terminal entries (=whoami/domains/principles/ping=).
+- Stats: 10+ Erlang/OTP years, 6 production protocols, 4 domains, 1 IEEE
+  ATC 2021 paper.
+- About: single paragraph on OTP workflow (no Principal wording).
+- Projects: originals only (=erl-trace=, =erlang_ts=, =dshell=); removed
+  =pingpong_application= and fork repos from the site list.
+- Skills: five supervision groups, deduplicated chips, dropped
+  low-signal tools/languages.
+- Awards/languages: trimmed per recruiter brief; education ≤2 bullets per
+  degree.
+
+* forks
+
+GitHub marks these as forks (not featured on the CV site):
+
+- =prometheus-cowboy= → upstream =prometheus-erl/prometheus-cowboy=
+- =edts= → upstream =sebastiw/edts=
+
+Legacy list also includes =pingpong_application= (original, removed as
+low-signal demo) and =restclient= (not verified on GitHub in this pass;
+confirm fork/original before featuring).
+
+* Open questions (owner)
+
+** Profile
+- Confirm preferred public location (site currently shows Remote).
+- Confirm site URL remains =https://datnguyen-tt.github.io=.
+
+** 5GenCare — scope metrics (Principal title credibility)
+One honest number from any of these would strengthen impact bullets:
+- Managed devices or tenant count.
+- Telemetry/event rate or daily volume.
+- Backend team size you architect for.
+Without at least one metric, the public =meta.role= stays senior-focused
+while the employment title remains Principal.
 
 * TODO(metric) Experience
-
-** 5GenCare
-- Number of managed devices or tenants.
-- Telemetry throughput or daily event volume.
-- Availability, incident reduction, or recovery-time improvement.
-- Deployment frequency or lead-time improvement from GitLab CI and Docker.
 
 ** Precision Development (PxD)
 - Number of users, regions, or communication flows supported.
@@ -56,20 +76,15 @@
   it provides.
 - =erlang_ts=: supported Spacemacs/EDTS versions and the owner's main
   contribution.
-- =pingpong_application=: whether it is a learning example or production
-  pattern demonstration.
 - =dshell=: intended users and the workflow problem it solves.
-- =prometheus-cowboy=: changes made relative to the upstream fork and
-  whether it remains actively used.
-- =edts=: changes made relative to =sebastiw/edts= and whether it remains
-  actively used.
-- For every featured project, provide current status and one concrete outcome
-  where available.
+- Fork-only repos (=prometheus-cowboy=, =edts=): changes vs upstream and
+  whether they remain actively used.
 
 * Verified external metadata
-- GitHub repository metadata was checked on 2026-10-15. The first four
-  featured projects are marked non-forks by GitHub; =prometheus-cowboy= and
-  =edts= are forks of the upstream repositories named above.
+- GitHub repository metadata was checked on 2026-10-15. Non-fork originals
+  among the legacy six: =erl-trace=, =erlang_ts=, =pingpong_application=,
+  =dshell=. =prometheus-cowboy= and =edts= are forks of the upstream
+  repositories named above.
 - Crossref metadata was checked for DOI
   =10.1109/ATC52653.2021.9598262=. The exact title, six-author list, venue,
   pages, publisher, and BibTeX fields in =cv.yaml= reflect that record.
@@ -81,13 +96,14 @@
   source does not connect it to delivered work.
 - Omitted speculative interests such as AI/ML, blockchain, edge computing,
   5G, and "cutting-edge technologies" where no project evidence was given.
-- Omitted HTML and CSS from the language group to keep the supervision-tree
-  group within the eight-child limit and prioritize backend skills.
-- Omitted tool-only database clients PgAdmin and DBeaver from core skills.
+- Omitted HTML, CSS, JavaScript, YAML, Bash, Emacs Lisp, PgAdmin, DBeaver,
+  and Jira from the skills tree to prioritize backend impact.
 - Omitted generic security labels OAuth2 and RBAC from the skills tree;
   TLS/OpenSSL remains attached to sourced experience.
-- Omitted professional-development courses and the data privacy training
-  because the requested schema has no certificate/training section.
+- Omitted professional-development courses, data privacy training, and
+  emotional-intelligence training because the schema has no certificate
+  section.
+- Omitted Students of 5 Merits (2014) from awards per content brief.
 - Omitted duplicate degree certificates because both degrees are represented
   under education.
 - No phone number or street address was included, in line with NFR-08.

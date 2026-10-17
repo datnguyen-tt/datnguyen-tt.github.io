@@ -3,8 +3,8 @@ meta:
   fullName: "Nguyen Tran Tien Dat"
   initials: "DN"
   role:
-    en: "Principal Backend Architect — Erlang/OTP"
-    vi: "Kiến trúc sư Backend Cấp cao — Erlang/OTP"
+    en: "Senior Erlang/OTP Engineer · Backend Architecture"
+    vi: "Kỹ sư Erlang/OTP Senior · Kiến trúc Backend"
   tagline:
     en: "Distributed Systems · Erlang/OTP · IoT/Telecom · Cloud Infra"
     vi: "Hệ thống phân tán · Erlang/OTP · IoT/Viễn thông · Hạ tầng Cloud"
@@ -18,62 +18,60 @@ meta:
     site: "https://datnguyen-tt.github.io"
   pdf: "/Dat_Nguyen_CV.pdf"
   availability:
-    en: "Open to remote senior and principal roles"
-    vi: "Sẵn sàng trao đổi về các vị trí senior và principal từ xa"
+    en: "Open to senior and lead remote backend roles"
+    vi: "Sẵn sàng các vị trí senior và lead backend làm việc từ xa"
 
 hero:
   headline:
-    en: "Erlang/OTP engineer — Ericsson IMS, Cisco NSO automation, and distributed IoT backends."
-    vi: "Kỹ sư Erlang/OTP — Ericsson IMS, tự động hóa Cisco NSO và backend IoT phân tán."
+    en: "Fault-tolerant Erlang/OTP systems for telecom, networking and IoT."
+    vi: "Hệ thống Erlang/OTP chịu lỗi cho viễn thông, mạng và IoT."
   summary:
-    en: "10+ years building resilient backend platforms across IoT, telecom, network automation, and cloud systems. Leads architecture, delivery, observability, and production debugging for mission-critical services."
-    vi: "Hơn 10 năm xây dựng nền tảng backend bền vững cho IoT, viễn thông, tự động hóa mạng và hệ thống cloud. Dẫn dắt kiến trúc, triển khai, observability (khả năng quan sát hệ thống) và xử lý sự cố production cho các dịch vụ trọng yếu."
+    en: "10+ years designing and running resilient backends for telecom signalling, network automation, messaging and IoT. I focus on supervision, observability and calm, predictable production."
+    vi: "Hơn 10 năm thiết kế và vận hành backend bền vững cho tín hiệu viễn thông, tự động hóa mạng, messaging và IoT. Tôi chú trọng supervision, khả năng quan sát hệ thống và production ổn định, dễ dự đoán."
   terminal:
     - prompt: "1>"
       input: "dat:whoami()."
-      output: "{principal_backend_architect, erlang_otp}"
+      output: "{senior_erlang_engineer, backend_architecture}"
     - prompt: "2>"
-      input: "dat:skills()."
-      output: "[distributed_systems, fault_tolerance, iot, telecom]"
+      input: "dat:domains()."
+      output: "[telecom, network_automation, messaging, iot]"
     - prompt: "3>"
-      input: "dat:experience()."
-      output: "{ok, '10+ years'}"
+      input: "dat:principles()."
+      output: "[let_it_crash, supervise, observe]"
     - prompt: "4>"
-      input: "dat ! {hire, You}."
-      output: "{ok, ack}"
+      input: "net_adm:ping('dat@cv')."
+      output: "pong"
 
 stats:
   - value: "10+"
     label:
-      en: "Years in backend engineering"
-      vi: "Năm làm kỹ thuật backend"
-  - value: "3"
+      en: "Years building Erlang/OTP systems"
+      vi: "Năm xây dựng hệ thống Erlang/OTP"
+  - value: "6"
     label:
-      en: "Employers: 5GenCare, PxD, DEK"
-      vi: "Nhà tuyển dụng: 5GenCare, PxD, DEK"
-  - value: "2"
+      en: "Production protocols: SIP · Diameter · Megaco · NETCONF · RESTCONF · TLS"
+      vi: "Giao thức production: SIP · Diameter · Megaco · NETCONF · RESTCONF · TLS"
+  - value: "4"
     label:
-      en: "Client engagements: Cisco, Ericsson"
-      vi: "Khách hàng/đối tác: Cisco, Ericsson"
+      en: "Domains: telecom · network automation · messaging · IoT"
+      vi: "Lĩnh vực: viễn thông · tự động hóa mạng · messaging · IoT"
   - value: "1"
     label:
-      en: "IEEE ATC publication"
-      vi: "Công bố tại IEEE ATC"
+      en: "IEEE ATC 2021 paper"
+      vi: "Bài báo IEEE ATC 2021"
 
 about:
   en:
-    - "Principal Backend Architect and Erlang/OTP engineer with 10+ years building fault-tolerant distributed systems for IoT, telecom, network automation, and cloud-native environments."
-    - "Designs resilient services, leads cross-functional delivery, and diagnoses complex concurrency and production issues. Brings hands-on depth across OTP architecture, telecom protocols, observability, data stores, and container-based infrastructure."
+    - "I start from OTP supervision and let-it-crash discipline, then instrument services so production stays observable and predictable. I ship pragmatic increments, debug concurrency under load, and share OTP design and BEAM runtime lessons with teammates."
   vi:
-    - "Kiến trúc sư Backend Cấp cao và kỹ sư Erlang/OTP với hơn 10 năm xây dựng hệ thống phân tán chịu lỗi cho IoT, viễn thông, tự động hóa mạng và môi trường cloud-native."
-    - "Thiết kế dịch vụ chịu lỗi, dẫn dắt đội ngũ liên chức năng và xử lý các vấn đề phức tạp về concurrency trên production. Có kinh nghiệm thực chiến về kiến trúc OTP, giao thức viễn thông, observability, data store và hạ tầng container."
+    - "Tôi bắt đầu từ supervision và triết lý let-it-crash của OTP, rồi gắn instrumentation để production luôn quan sát được và dễ dự đoán. Tôi giao hàng theo từng bước thực tế, debug concurrency dưới tải và chia sẻ kinh nghiệm thiết kế OTP cùng runtime BEAM với đồng đội."
 
 experience:
   - id: "5gencare"
     company: "5GenCare"
     role:
-      en: "Principal Backend Architect — Erlang/OTP Engineer"
-      vi: "Kiến trúc sư Backend Cấp cao — Kỹ sư Erlang/OTP"
+      en: "Principal Backend Architect — Erlang/OTP"
+      vi: "Kiến trúc sư Backend Cấp cao — Erlang/OTP"
     location:
       en: "Hong Kong · Remote"
       vi: "Hong Kong · Từ xa"
@@ -224,9 +222,9 @@ experience:
       - "Wireshark"
 
 skills:
-  - id: "core"
+  - id: "erlang-otp-core"
     name:
-      en: "Core Erlang/OTP"
+      en: "Erlang/OTP core"
       vi: "Nền tảng Erlang/OTP"
     strategy: "one_for_one"
     children:
@@ -237,12 +235,12 @@ skills:
       - "State Machines"
       - "Hot Code Upgrade"
       - "BEAM VM"
-      - "ETS/DETS"
+      - "Production Debugging"
 
-  - id: "distributed-architecture"
+  - id: "distributed-systems"
     name:
-      en: "Distributed Systems & Architecture"
-      vi: "Hệ thống Phân tán & Kiến trúc"
+      en: "Distributed systems"
+      vi: "Hệ thống phân tán"
     strategy: "rest_for_one"
     children:
       - "Distributed Systems"
@@ -254,11 +252,11 @@ skills:
       - "High Availability"
       - "Fault Tolerance"
 
-  - id: "protocols-telecom"
+  - id: "telecom-networking"
     name:
-      en: "Protocols & Telecom"
-      vi: "Giao thức & Viễn thông"
-    strategy: "one_for_all"
+      en: "Telecom & networking protocols"
+      vi: "Giao thức viễn thông & mạng"
+    strategy: "one_for_one"
     children:
       - "SIP"
       - "Diameter"
@@ -269,10 +267,10 @@ skills:
       - "YANG"
       - "Cisco NSO"
 
-  - id: "data-stores"
+  - id: "data-storage"
     name:
-      en: "Data Stores"
-      vi: "Lưu trữ Dữ liệu"
+      en: "Data & storage"
+      vi: "Dữ liệu & lưu trữ"
     strategy: "one_for_one"
     children:
       - "Mnesia"
@@ -282,56 +280,27 @@ skills:
       - "CiscoDB"
       - "NoSQL"
 
-  - id: "cloud-observability"
+  - id: "cloud-observability-testing"
     name:
-      en: "Cloud & Observability"
-      vi: "Cloud & Observability"
-    strategy: "rest_for_one"
+      en: "Cloud, observability & testing"
+      vi: "Cloud, observability & kiểm thử"
+    strategy: "one_for_all"
     children:
       - "AWS"
       - "Docker"
-      - "Docker Swarm"
       - "Prometheus"
       - "Grafana"
       - "GitLab CI"
       - "Jenkins"
-      - "Wireshark"
-
-  - id: "languages"
-    name:
-      en: "Programming Languages"
-      vi: "Ngôn ngữ Lập trình"
-    strategy: "one_for_one"
-    children:
-      - "Erlang/OTP"
-      - "Python"
-      - "Bash"
-      - "YANG"
-      - "C/C++"
-      - "Emacs Lisp"
-      - "JavaScript"
-      - "YAML"
-
-  - id: "testing-debugging"
-    name:
-      en: "Testing & Debugging"
-      vi: "Kiểm thử & Gỡ lỗi"
-    strategy: "one_for_all"
-    children:
       - "Common Test"
       - "Dialyzer"
-      - "DBG"
-      - "EDTS"
-      - "Lux Test Framework"
-      - "Tracing"
-      - "Production Debugging"
 
 projects:
   - name: "erl-trace"
     repo: "https://github.com/datnguyen-tt/erl-trace"
     description:
-      en: "Original Emacs Lisp tool for inserting Erlang trace and debug logging with customizable output formats."
-      vi: "Công cụ Emacs Lisp tự phát triển để chèn trace và debug log Erlang với định dạng đầu ra tùy chỉnh."
+      en: "Emacs Lisp tool for inserting Erlang trace and debug logging with customizable output formats."
+      vi: "Công cụ Emacs Lisp để chèn trace và debug log Erlang với định dạng đầu ra tùy chỉnh."
     tags:
       - "Erlang"
       - "Emacs Lisp"
@@ -339,47 +308,20 @@ projects:
   - name: "erlang_ts"
     repo: "https://github.com/datnguyen-tt/erlang_ts"
     description:
-      en: "Original Emacs Lisp project providing an Erlang layer for Spacemacs with EDTS integration."
-      vi: "Dự án Emacs Lisp tự phát triển, cung cấp layer Erlang cho Spacemacs và tích hợp EDTS."
+      en: "Emacs Lisp project providing an Erlang layer for Spacemacs with EDTS integration."
+      vi: "Dự án Emacs Lisp cung cấp layer Erlang cho Spacemacs và tích hợp EDTS."
     tags:
       - "Erlang"
       - "Spacemacs"
       - "EDTS"
-  - name: "pingpong_application"
-    repo: "https://github.com/datnguyen-tt/pingpong_application"
-    description:
-      en: "Original Erlang application demonstrating ping-pong messaging between two processes."
-      vi: "Ứng dụng Erlang tự phát triển, minh họa cơ chế gửi nhận thông điệp giữa hai process."
-    tags:
-      - "Erlang"
-      - "Processes"
-      - "Message Passing"
   - name: "dshell"
     repo: "https://github.com/datnguyen-tt/dshell"
     description:
-      en: "Original Emacs Lisp utility for creating, deleting, and switching shell-mode buffers."
-      vi: "Tiện ích Emacs Lisp tự phát triển để tạo, xóa và chuyển đổi các buffer shell-mode."
+      en: "Emacs Lisp utility for creating, deleting, and switching shell-mode buffers."
+      vi: "Tiện ích Emacs Lisp để tạo, xóa và chuyển đổi các buffer shell-mode."
     tags:
       - "Emacs Lisp"
       - "Shell"
-  - name: "prometheus-cowboy"
-    repo: "https://github.com/datnguyen-tt/prometheus-cowboy"
-    description:
-      en: "Fork of prometheus-erl/prometheus-cowboy for exposing Prometheus metrics through Cowboy and Cowboy 2."
-      vi: "Fork từ prometheus-erl/prometheus-cowboy, dùng để cung cấp Prometheus metrics qua Cowboy và Cowboy 2."
-    tags:
-      - "Erlang"
-      - "Prometheus"
-      - "Cowboy"
-  - name: "edts"
-    repo: "https://github.com/datnguyen-tt/edts"
-    description:
-      en: "Fork of sebastiw/edts, the Erlang Development Tool Suite for Emacs."
-      vi: "Fork từ sebastiw/edts, bộ công cụ phát triển Erlang dành cho Emacs."
-    tags:
-      - "Erlang"
-      - "Emacs Lisp"
-      - "EDTS"
 
 publications:
   - title:
@@ -416,11 +358,9 @@ education:
       en:
         - "Built a hybrid geolocation gateway using LoRaWAN and Semtech LR1110."
         - "Co-authored an IEEE ATC 2021 paper on an LR1110-based integrated multi-standard geolocation system."
-        - "Developed a LoRaWAN relay virtual gateway addressing installation, coverage, cost, and energy constraints."
       vi:
         - "Xây dựng gateway định vị lai sử dụng LoRaWAN và Semtech LR1110."
         - "Đồng tác giả bài báo IEEE ATC 2021 về hệ thống định vị đa chuẩn tích hợp dựa trên LR1110."
-        - "Phát triển LoRaWAN relay virtual gateway nhằm giải quyết các hạn chế về lắp đặt, vùng phủ, chi phí và năng lượng."
   - degree:
       en: "Bachelor of Engineering in Computer Engineering"
       vi: "Kỹ sư Kỹ thuật Máy tính"
@@ -446,11 +386,6 @@ awards:
       vi: "Giải Nhì — Tài trợ Ý tưởng Sáng tạo"
     issuer: "University of Information Technology"
     year: 2015
-  - title:
-      en: "Student of 5 Merits Award"
-      vi: "Danh hiệu Sinh viên 5 Tốt"
-    issuer: "University of Information Technology"
-    year: 2014
 
 languages:
   - name:
@@ -463,5 +398,5 @@ languages:
       en: "English"
       vi: "Tiếng Anh"
     level:
-      en: "Upper-intermediate"
-      vi: "Trung cấp cao"
+      en: "Professional working proficiency"
+      vi: "Thành thạo trong công việc"
