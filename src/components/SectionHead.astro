@@ -4,11 +4,15 @@ interface Props {
   index: string;
   title: string;
   hint?: string | undefined;
+  hintSub?: string | undefined;
 }
-const { id, index, title, hint } = Astro.props;
+const { id, index, title, hint, hintSub } = Astro.props;
 ---
 
 <header class="section-head">
-  <p class="section-head__kicker" aria-hidden="true"><b>{index}</b> / {hint}</p>
+  <p class="section-head__kicker" aria-hidden="true">
+    <b>{index}</b> / <span class="kicker-primary">{hint}</span>
+    {hintSub && <span class="kicker-sub"> · {hintSub}</span>}
+  </p>
   <h2 id={id}>{title}</h2>
 </header>

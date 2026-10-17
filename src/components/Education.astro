@@ -46,11 +46,12 @@ const s = text.sections.education;
           <ul class="awards">
             {
               cv.awards.map((a) => (
-                <li class="card award">
+                <li class="award">
                   <span class="award__year">{a.year}</span>
-                  <span>
-                    <span class="award__title">{t(a.title, lang)}</span>
-                    <span class="award__issuer">{a.issuer}</span>
+                  <span class="award__text">
+                    {t(a.title, lang)}
+                    <span class="award__sep" aria-hidden="true"> · </span>
+                    {a.issuer}
                   </span>
                 </li>
               ))
@@ -90,7 +91,6 @@ const s = text.sections.education;
     color: var(--text-muted);
   }
   .degrees,
-  .awards,
   .langs,
   .edu__side {
     display: grid;
@@ -117,7 +117,7 @@ const s = text.sections.education;
     letter-spacing: -0.015em;
   }
   .degree__school {
-    color: var(--accent-text);
+    color: var(--text-muted);
     font-weight: 500;
     font-size: 0.93rem;
   }
@@ -139,28 +139,34 @@ const s = text.sections.education;
     color: var(--msg-text);
     font-family: var(--font-mono);
   }
+  .awards {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
   .award {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 0.9rem;
+    display: flex;
+    flex-wrap: wrap;
     align-items: baseline;
-    padding: 0.8rem 1rem;
+    gap: 0.45rem 0.55rem;
+    font-size: 0.9rem;
+    line-height: 1.45;
+    color: var(--text-muted);
   }
   .award__year {
+    flex: none;
     font-family: var(--font-mono);
-    font-weight: 700;
-    color: var(--accent-text);
-  }
-  .award__title {
-    display: block;
+    font-size: 0.78rem;
     font-weight: 600;
-    font-size: 0.93rem;
-    line-height: 1.4;
+    color: var(--text);
   }
-  .award__issuer {
-    display: block;
+  .award__text {
+    color: var(--text);
+    font-weight: 500;
+  }
+  .award__sep {
     color: var(--text-muted);
-    font-size: 0.82rem;
+    font-weight: 400;
   }
   .lang {
     display: flex;
@@ -189,7 +195,6 @@ const s = text.sections.education;
       gap: 1rem;
     }
     .degree,
-    .award,
     .lang {
       padding: 0.2rem 0;
       border: 0;
@@ -198,7 +203,7 @@ const s = text.sections.education;
       gap: 0.15rem;
     }
     .award {
-      column-gap: 0.6rem;
+      gap: 0.35rem;
     }
     .notes {
       margin-top: 0.1rem;
