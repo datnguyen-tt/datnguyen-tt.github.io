@@ -21,20 +21,25 @@ const paths: Record<Lang, string> = { en: "/", vi: "/vi/" };
 const abs = (p: string) => new URL(p, site).href;
 const canonical = abs(paths[lang]);
 
-const title = `${meta.name} — ${t(meta.role, lang)}`;
-const description = t(hero.summary, lang);
+const role = t(meta.role, lang);
+const headline = t(hero.headline, lang);
+const title = `${meta.name} — ${role}`;
+const description = headline;
 const ogImage = abs("/og.png");
 
-// Latin always; Vietnamese subsets only on /vi/ (they carry the diacritics).
-const fonts = [interLatin, monoLatin, ...(lang === "vi" ? [interVi, monoVi] : [])];
+// Latin always; on /vi/, preload Vietnamese subsets first so headline diacritics never swap late.
+const fonts =
+  lang === "vi"
+    ? [interVi, interLatin, monoVi, monoLatin]
+    : [interLatin, monoLatin];
 
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Person",
   name: meta.name,
   alternateName: meta.fullName,
-  jobTitle: t(meta.role, lang),
-  description: t(hero.headline, lang),
+  jobTitle: role,
+  description: headline,
   url: canonical,
   email: `mailto:${meta.email}`,
   sameAs: [meta.links.github, meta.links.linkedin],
@@ -111,6 +116,7 @@ const jsonLd = {
         if (tc) tc.setAttribute("content", theme === "light" ? "#f6f7f9" : "#0b0f14");
         d.dataset.motion = motion;
         d.classList.add("js");
+        if (motion === "on") d.classList.add("terminal-typing-init");
         if (print) d.classList.add("print-mode");
       })();
     </script>
@@ -120,6 +126,7 @@ const jsonLd = {
     <slot />
     <script>
       import "../scripts/site";
+      import "../scripts/fx-loader";
     </script>
   </body>
 </html>
