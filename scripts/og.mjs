@@ -54,11 +54,11 @@ const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" v
   </g>
 
   <text x="72" y="300" font-family="${sans}" font-weight="800" font-size="84" fill="#e6edf3" letter-spacing="-3">${esc(meta.name)}</text>
-  <text x="72" y="356" font-family="${sans}" font-weight="600" font-size="26" fill="#ff6b8a">${esc(meta.role.en)}</text>
-  <text x="72" y="430" font-family="${sans}" font-weight="500" font-size="28" fill="#e6edf3">${wrap(hero.headline.en, 34)
+  <text x="72" y="356" font-family="${sans}" font-weight="500" font-size="26" fill="#9daabb">${esc(meta.role.en)}</text>
+  <text x="72" y="430" font-family="${sans}" font-weight="500" font-size="26" fill="#c9d4e0">${wrap(hero.headline.en, 34)
     .map((row, i) => `<tspan x="72" dy="${i ? 40 : 0}">${esc(row)}</tspan>`)
     .join("")}</text>
-  <text x="72" y="560" font-family="${mono}" font-size="20" fill="#22d3ee">${esc(meta.tagline.en)}</text>
+  <text x="72" y="560" font-family="${mono}" font-size="18" fill="#6b7d92">${esc(meta.tagline.en)}</text>
 
   <rect x="640" y="190" width="500" height="290" rx="14" fill="#0f151c" stroke="#35475d"/>
   <rect x="640" y="190" width="500" height="42" rx="14" fill="#121a24"/>
