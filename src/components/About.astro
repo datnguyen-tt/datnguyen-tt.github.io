@@ -7,7 +7,10 @@ interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-const s = ui[lang].sections.about;
+const text = ui[lang];
+const s = text.sections.about;
+const atomOf = (label: string) =>
+  (label.toLowerCase().match(/[a-z]+/) ?? ["stat"])[0];
 ---
 
 <section id="about" class="section" aria-labelledby="about-title">
@@ -23,15 +26,25 @@ const s = ui[lang].sections.about;
         <ul class="stats">
           {
             cv.stats.map((stat) => (
-              <li class="card stat">
+              <li
+                class="card stat"
+                data-atom={atomOf(stat.label.en)}
+                data-value={stat.value}
+              >
                 <p class="stat__value">{stat.value}</p>
                 <p class="stat__label">{t(stat.label, lang)}</p>
               </li>
             ))
           }
         </ul>
-        <!-- MOUNT: E-03 process mailbox FIFO (set --fx-height when attaching) -->
-        <div class="fx" data-effect="mailbox-fifo" aria-hidden="true"></div>
+        <!-- MOUNT: E-03 process mailbox FIFO (SSR height reserved under html.js so CLS = 0) -->
+        <div
+          class="fx fx--mailbox no-print"
+          data-effect="mailbox-fifo"
+          data-aria={text.fx.mailboxAria}
+          data-caption={text.fx.mailboxCaption}
+          data-caption-sub={text.fx.mailboxCaptionSub}
+        ></div>
       </div>
     </div>
   </div>
@@ -66,6 +79,12 @@ const s = ui[lang].sections.about;
     display: grid;
     gap: 0.35rem;
     align-content: start;
+    transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  }
+  .stat:global(.is-pulsing) {
+    border-color: var(--ok);
+    box-shadow: 0 0 0 1px var(--ok), var(--shadow);
+    transform: translateY(-2px);
   }
   .stat__value {
     font-family: var(--font-mono);
@@ -79,6 +98,10 @@ const s = ui[lang].sections.about;
     color: var(--text-muted);
     font-size: 0.875rem;
     line-height: 1.4;
+  }
+  :global(html.js) .fx--mailbox {
+    --fx-height: 120px;
+    margin-top: 0.85rem;
   }
   @media (min-width: 62rem) {
     .about {
