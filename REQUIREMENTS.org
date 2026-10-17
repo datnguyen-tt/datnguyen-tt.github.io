@@ -81,6 +81,33 @@ Tất cả tắt/giảm khi =prefers-reduced-motion=, pause khi ra khỏi viewpo
 | E-13 | Easter egg  | Konami code / =observer:start().= → full-screen | Engineer delight              |
 |      |             | process view                                   |                               |
 
+** E-01 v2 — "Fault-tolerant BEAM mesh" (owner feedback 2026-10-15)
+Feedback: cụm node rời rạc, không liên kết; node quá đơn giản; hero chưa
+ấn tượng; thích bố trí ban đầu (mesh phủ cả hero) nhưng terminal che node.
+- Một *mạng lưới duy nhất* phủ toàn hero (kể cả phía sau terminal), các
+  BEAM node *full mesh* như distributed Erlang thật — không chia cụm rời.
+- Mỗi node là 1 VM có tên + vai trò thật theo career:
+  =sbg@ericsson= (SIP/Diameter/Megaco), =nso@cisco= (NETCONF/YANG),
+  =ivr@pxd= (USSD/SMS/IVR), =iot@5gencare= (MQTT/telemetry),
+  =mnesia@db=, =edge@gw=… Bên trong vẽ mini supervision tree
+  (1 sup + 3–4 worker).
+- Packet có *loại giao thức* (màu + nhãn ngắn thỉnh thoảng hiện):
+  =INVITE=, =CCR/CCA=, =<rpc/>=, =PUBLISH=, ={call, …}=.
+- Fault tolerance kể thành câu chuyện:
+  - Click worker → crash → supervisor restart (như cũ).
+  - Click node (vùng sup) → =nodedown=: link đỏ đứt nét, traffic
+    *reroute* qua node khác (failover), sau ~2s =nodeup= heal lại.
+  - "Chaos monkey" tự chạy khi user không tương tác (~6–9s/lần) để
+    người xem thụ động vẫn thấy fault tolerance.
+- Terminal =erl — dat@cv= là *glass panel* (nền bán trong suốt + blur) để
+  thấy mesh phía sau; *không có node nào nằm dưới terminal/text*
+  (chỉ link + packet đi xuyên phía sau). Sau khi gõ xong, terminal
+  *log sự kiện thật* của mô phỏng: =ERROR REPORT= / =PROGRESS REPORT=,
+  =nodedown=, =nodeup= (giữ tối đa ~6 dòng, cuộn).
+- HUD nhỏ kiểu =observer=: =nodes 6/6 · msgs/s · restarts · netsplits=
+  (ghi rõ là simulation, không phải số liệu career).
+- Mobile: cùng mesh, thu gọn 4 node trong dải riêng dưới CTA.
+
 Ràng buộc hiệu ứng:
 - Canvas 2D (hoặc OffscreenCanvas) — *không* WebGL nặng ở MVP.
 - Tối đa ~200 particle trên desktop, ~60 trên mobile; ổn định 60 fps.
