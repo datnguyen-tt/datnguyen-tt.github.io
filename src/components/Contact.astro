@@ -9,10 +9,8 @@ interface Props {
 const { lang } = Astro.props;
 const text = ui[lang];
 const s = text.sections.contact;
-const { meta, hero } = cv;
-
-// The "send" line comes from the data: the terminal entry using `!`.
-const send = hero.terminal.find((l) => l.input.includes("!")) ?? hero.terminal.at(-1);
+const { meta } = cv;
+const term = text.contactTerminal;
 ---
 
 <section id="contact" class="section" aria-labelledby="contact-title">
@@ -46,22 +44,32 @@ const send = hero.terminal.find((l) => l.input.includes("!")) ?? hero.terminal.a
         </ul>
       </div>
 
-      <!-- MOUNT: E-11 send-message (packet flies into Dat's mailbox, {ok, ack}) -->
-      <div class="send no-print" data-effect="send-message">
+      <!-- MOUNT: E-11 send-message (SSR stage & button pre-rendered under html.js for 0 CLS) -->
+      <div
+        class="send no-print"
+        data-effect="send-message"
+        data-aria={text.fx.sendAria}
+        data-status={text.fx.sendStatus}
+        data-status-sub={text.fx.sendStatusSub}
+      >
         <p class="send__bar">
           <span class="send__dots" aria-hidden="true"><i></i><i></i><i></i></span>
           <span>dat@cv</span>
+          <span class="send__status js-only" data-send-status>
+            <span class="send__status-primary">{text.fx.sendStatus}</span>
+            <code class="send__status-sub"> · {text.fx.sendStatusSub}</code>
+          </span>
         </p>
-        {
-          send && (
-            <pre class="send__body"><code><span class="p">{send.prompt}</span> <span class="i">{send.input}</span>{"\n"}<span class="o">{send.output}</span></code></pre>
-          )
-        }
+        <pre class="send__body"><code><span class="p">{term.prompt}</span> <span class="i">{term.input}</span>{"\n"}<span class="o">{term.output}</span></code></pre>
+        <div class="send__stage js-only" data-send-stage></div>
         <p class="send__cta">
           <a class="btn btn--primary no-url" href={`mailto:${meta.email}`}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18v12H3z"></path><path d="m3 7 9 6 9-6"></path></svg>
             {meta.email}
           </a>
+          <button type="button" class="btn send__btn js-only" data-send-trigger="true">
+            {text.fx.sendBtn}
+          </button>
         </p>
       </div>
     </div>
@@ -121,6 +129,20 @@ const send = hero.terminal.find((l) => l.input.includes("!")) ?? hero.terminal.a
     font-family: var(--font-mono);
     font-size: 0.75rem;
   }
+  .send__status {
+    margin-left: auto;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
+    color: var(--text);
+  }
+  .send__status-primary {
+    font-weight: 600;
+    color: var(--ok);
+  }
+  .send__status-sub {
+    font-family: var(--font-mono);
+    color: var(--text-muted);
+  }
   .send__dots {
     display: inline-flex;
     gap: 0.35rem;
@@ -152,7 +174,15 @@ const send = hero.terminal.find((l) => l.input.includes("!")) ?? hero.terminal.a
   .send__body .o {
     color: var(--ok);
   }
+  .send__stage {
+    height: 88px;
+    padding: 0 1.25rem;
+    margin-bottom: 0.75rem;
+  }
   .send__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
     padding: 0 1.25rem 1.5rem;
   }
 
