@@ -5,6 +5,7 @@ import "../styles/global.css";
 import "../styles/print.css";
 import { cv, t, type Lang } from "../data/cv";
 import { ui } from "../i18n/ui";
+import { withBase } from "../lib/url";
 import interLatin from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
 import interVi from "@fontsource-variable/inter/files/inter-vietnamese-wght-normal.woff2?url";
 import monoLatin from "@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2?url";
@@ -17,7 +18,7 @@ const { lang } = Astro.props;
 const { meta, hero } = cv;
 const site = Astro.site ?? new URL(meta.links.site);
 
-const paths: Record<Lang, string> = { en: "/", vi: "/vi/" };
+const paths: Record<Lang, string> = { en: withBase("/"), vi: withBase("/vi/") };
 const abs = (p: string) => new URL(p, site).href;
 const canonical = abs(paths[lang]);
 
@@ -25,7 +26,7 @@ const role = t(meta.role, lang);
 const headline = t(hero.headline, lang);
 const title = `${meta.name} — ${role}`;
 const description = headline;
-const ogImage = abs("/og.png");
+const ogImage = abs(withBase("/og.png"));
 
 // Latin always; on /vi/, preload Vietnamese subsets first so headline diacritics never swap late.
 const fonts =
@@ -61,8 +62,8 @@ const jsonLd = {
     <link rel="alternate" hreflang="en" href={abs(paths.en)} />
     <link rel="alternate" hreflang="vi" href={abs(paths.vi)} />
     <link rel="alternate" hreflang="x-default" href={abs(paths.en)} />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="icon" href={withBase("/favicon.svg")} type="image/svg+xml" />
+    <link rel="sitemap" href={withBase("/sitemap-index.xml")} />
     <meta name="author" content={meta.name} />
     <meta name="theme-color" content="#0b0f14" />
     {

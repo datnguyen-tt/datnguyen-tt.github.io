@@ -1,6 +1,7 @@
 ---
 import { cv, type Lang } from "../data/cv";
 import { ui, SECTION_ORDER } from "../i18n/ui";
+import { withBase } from "../lib/url";
 import Monogram from "./Monogram.astro";
 
 interface Props {
@@ -9,7 +10,7 @@ interface Props {
 const { lang } = Astro.props;
 const text = ui[lang];
 const other: Lang = lang === "en" ? "vi" : "en";
-const otherHref = other === "en" ? "/" : "/vi/";
+const otherHref = withBase(other === "en" ? "/" : "/vi/");
 ---
 
 <header class="site-header">

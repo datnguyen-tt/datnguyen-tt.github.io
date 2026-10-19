@@ -1,6 +1,7 @@
 ---
 import { cv, t, type Lang } from "../data/cv";
 import { ui } from "../i18n/ui";
+import { withBase } from "../lib/url";
 import Monogram from "./Monogram.astro";
 
 interface Props {
@@ -33,7 +34,7 @@ const { meta, hero } = cv;
 
       <ul class="hero__cta">
         <li>
-          <a class="btn btn--primary no-url no-print" href={meta.pdf} download>
+          <a class="btn btn--primary no-url no-print" href={withBase(meta.pdf)} download>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 20h16"></path></svg>
             {text.cta.download}
           </a>

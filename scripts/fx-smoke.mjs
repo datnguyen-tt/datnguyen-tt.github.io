@@ -10,7 +10,7 @@ import { chromium } from "playwright";
 
 const require = createRequire(import.meta.url);
 const PORT = 4322;
-const BASE = `http://127.0.0.1:${PORT}`;
+const BASE = `http://127.0.0.1:${PORT}/datnguyenfolio`;
 const OUT_DIR = "qa/hero-v2";
 
 const EFFECTS = [
