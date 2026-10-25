@@ -96,6 +96,7 @@ export interface UI {
     sendBtn: string;
     sendStatus: string;
     sendStatusSub: string;
+    introSkip: string;
   };
 }
 
@@ -222,6 +223,7 @@ export const ui: Record<Lang, UI> = {
       sendBtn: "Send {hire, You}",
       sendStatus: "Message sent",
       sendStatusSub: "{ok, ack}",
+      introSkip: "Skip intro",
     },
   },
   vi: {
@@ -354,6 +356,7 @@ export const ui: Record<Lang, UI> = {
       sendBtn: "Gửi {hire, You}",
       sendStatus: "Đã gửi thông điệp",
       sendStatusSub: "{ok, ack}",
+      introSkip: "Bỏ qua intro",
     },
   },
 };

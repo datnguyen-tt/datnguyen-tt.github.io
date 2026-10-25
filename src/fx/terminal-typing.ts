@@ -85,6 +85,9 @@ export function mountTerminalTyping(mount: HTMLElement): void {
   let charIdx = 0;
   let phase: "typing" | "output" | "done" = "typing";
   let visible = true;
+  // Held while the first-visit shell intro covers the page.
+  const rootCl = document.documentElement.classList;
+  let held = rootCl.contains("intro-pending") || rootCl.contains("intro-run");
 
   function clearTimer(): void {
     if (timer !== null) {
@@ -176,7 +179,17 @@ export function mountTerminalTyping(mount: HTMLElement): void {
 
   if (isMotionOn()) {
     resetAnimation();
-    timer = setTimeout(stepTick, 90);
+    if (held) {
+      const release = (): void => {
+        if (!held) return;
+        held = false;
+        if (visible && phase !== "done" && timer === null) timer = setTimeout(stepTick, 120);
+      };
+      window.addEventListener("intro:done", release, { once: true });
+      setTimeout(release, 7000); // the intro never ran: don't leave the terminal blank
+    } else {
+      timer = setTimeout(stepTick, 90);
+    }
   } else {
     showAllInstantly();
   }
@@ -185,7 +198,7 @@ export function mountTerminalTyping(mount: HTMLElement): void {
     visible = v;
     if (!v) {
       clearTimer();
-    } else if (isMotionOn() && phase !== "done" && timer === null) {
+    } else if (!held && isMotionOn() && phase !== "done" && timer === null) {
       timer = setTimeout(stepTick, 50);
     }
   });

@@ -1,0 +1,111 @@
+/* First-visit Erlang shell intro (src/scripts/intro.ts).
+   html.intro-pending is set by the head script before first paint; the backdrop
+   covers the page until the overlay mounts, and hides itself after 6s if
+   the script never runs. Fixed-position only: no layout shift. */
+html.intro-pending::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--bg);
+  animation: intro-failsafe 0s linear 6s forwards;
+}
+@keyframes intro-failsafe {
+  to {
+    visibility: hidden;
+  }
+}
+
+.intro {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--bg);
+  font-family: var(--font-mono);
+  font-size: clamp(0.75rem, 0.55rem + 0.6vw, 0.95rem);
+  line-height: 1.6;
+  color: var(--text);
+}
+
+.intro__screen {
+  max-width: 64rem;
+  padding: clamp(1rem, 4vw, 2.5rem) max(16px, var(--gutter));
+}
+
+.intro__ln {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.intro__ln--in {
+  margin-top: 0.35em;
+}
+.intro__ln--muted {
+  color: var(--text-muted);
+}
+.intro__ln--ok {
+  color: var(--ok);
+}
+.intro__ln--err {
+  color: var(--accent-text);
+}
+.intro__prompt {
+  color: var(--msg-text);
+}
+.intro__atom {
+  color: var(--msg-text);
+}
+
+.intro__cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.1em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background: var(--text);
+  animation: intro-blink 1s steps(1) infinite;
+}
+@keyframes intro-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+.intro__skip {
+  position: absolute;
+  right: max(16px, var(--gutter));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  padding: 0.45rem 0.8rem;
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+.intro__skip:hover {
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+.intro__skip:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Node atoms flying from `nodes().` into their mesh cards. */
+.intro-chip {
+  position: fixed;
+  z-index: 1001;
+  pointer-events: none;
+  padding: 0.1rem 0.4rem;
+  font-family: var(--font-mono);
+  font-size: clamp(0.75rem, 0.55rem + 0.6vw, 0.95rem);
+  line-height: 1.6;
+  color: var(--msg-text);
+  background: var(--surface);
+  border: 1px solid var(--msg);
+  border-radius: 6px;
+  white-space: nowrap;
+  will-change: transform, opacity;
+}

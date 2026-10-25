@@ -3,6 +3,7 @@ import "../styles/fonts.css";
 import "../styles/tokens.css";
 import "../styles/global.css";
 import "../styles/print.css";
+import "../styles/intro.css";
 import { cv, t, type Lang } from "../data/cv";
 import { ui } from "../i18n/ui";
 import { withBase } from "../lib/url";
@@ -119,15 +120,28 @@ const jsonLd = {
         d.classList.add("js");
         if (motion === "on") d.classList.add("terminal-typing-init");
         if (print) d.classList.add("print-mode");
+        // First-visit shell intro: once per session, never under automation; ?intro forces it.
+        if (motion === "on") {
+          var seen = null;
+          try {
+            seen = sessionStorage.getItem("intro-seen");
+            sessionStorage.setItem("intro-seen", "1");
+          } catch (e) {}
+          var force = /[?&]intro(&|=|$)/.test(location.search);
+          if (force || (!seen && !navigator.webdriver)) d.classList.add("intro-pending");
+        }
       })();
     </script>
   </head>
-  <body>
+  <body data-intro-skip={ui[lang].fx.introSkip}>
     <a class="skip-link" href="#main">{ui[lang].skip}</a>
     <slot />
     <script>
       import "../scripts/site";
       import "../scripts/fx-loader";
+      if (document.documentElement.classList.contains("intro-pending")) {
+        void import("../scripts/intro");
+      }
     </script>
   </body>
 </html>

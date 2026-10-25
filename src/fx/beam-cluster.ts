@@ -546,6 +546,11 @@ export function mountBeamCluster(mount: HTMLElement): void {
       spawnPacketBetween(fromIdx, toIdx, ((i * 0.23) % 0.72) + 0.14);
     }
 
+    // Card centres (mount coordinates) for the shell intro's node hand-off.
+    mount.dataset["nodeAnchors"] = JSON.stringify(
+      nodes.map((n) => ({ id: n.spec.id, x: Math.round(n.cx), y: Math.round(n.cy) })),
+    );
+
     updateHudText();
   }
 
@@ -1455,6 +1460,22 @@ export function mountBeamCluster(mount: HTMLElement): void {
       const wIdx = demoCursor % node.workers.length;
       crashWorker(nodeIdx, wIdx);
     }
+  });
+
+  // Shell intro: a `nodes().` atom landed on its card — greet it with a nodeup pulse.
+  window.addEventListener("beam:nodeup", (e) => {
+    const id = (e as CustomEvent<string>).detail;
+    const node = nodes.find((n) => n.spec.id === id);
+    if (!node || node.lifecycle !== "up") return;
+    const nowMs = performance.now();
+    lastUserInteractMs = nowMs; // keep the chaos monkey quiet while the page settles
+    node.healUntilMs = nowMs + 950;
+    node.statusText = "nodeup";
+    node.statusUntilMs = nowMs + 950;
+    for (const edge of edges) {
+      if (edge.a === node.idx || edge.b === node.idx) edge.pulseUntilMs = nowMs + 950;
+    }
+    renderFrame(nowMs);
   });
 
   const ticker = scheduler.register("beam-cluster", tickSimulation, false);
