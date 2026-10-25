@@ -18,7 +18,7 @@ let browser;
 try {
   browser = await chromium.launch();
   const page = await browser.newPage();
-  await page.goto(`http://127.0.0.1:${PORT}/datnguyenfolio/?print`, { waitUntil: "networkidle" });
+  await page.goto(`http://127.0.0.1:${PORT}/?print`, { waitUntil: "networkidle" });
   await page.emulateMedia({ media: "print" });
   await page.evaluate(() => document.fonts.ready);
   await page.pdf({
