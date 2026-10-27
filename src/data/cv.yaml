@@ -82,16 +82,19 @@ experience:
     highlights:
       en:
         - "Sole full-time Erlang engineer owning the distributed IoT/AIoT backend (Erlang/OTP, Mnesia) for baby-monitor camera products serving ~150,000 users, mostly in the US."
-        - "Ran 3 distributed Erlang clusters on 20 AWS EC2 nodes for nursery-camera brands (Motorola Nursery, Chillax, Salus), with fault-tolerant services and Prometheus monitoring for telemetry and device management."
+        - "Ran distributed Erlang clusters with multiple nodes on AWS for nursery-camera brands (Motorola Nursery, ChillaxCare, Salus), with fault-tolerant services and Prometheus monitoring for telemetry and device management."
+        - "Managed the product's AWS infrastructure end to end — EC2, S3, SES, SNS, Route 53, CloudWatch, CloudTrail and Grafana — covering compute, storage, email and push notifications, DNS, monitoring and audit logging."
         - "Led Docker deployments through GitLab CI for container-based backend releases within an 8-person product team."
       vi:
         - "Kỹ sư Erlang toàn thời gian duy nhất, chịu trách nhiệm backend IoT/AIoT phân tán (Erlang/OTP, Mnesia) cho các sản phẩm camera giám sát em bé với khoảng 150.000 người dùng, chủ yếu tại Mỹ."
-        - "Vận hành 3 cụm Erlang phân tán trên 20 node AWS EC2 cho các thương hiệu camera em bé (Motorola Nursery, Chillax, Salus), với dịch vụ chịu lỗi và giám sát Prometheus cho telemetry và quản lý thiết bị."
+        - "Vận hành các cụm Erlang phân tán gồm nhiều node trên AWS cho các thương hiệu camera em bé (Motorola Nursery, ChillaxCare, Salus), với dịch vụ chịu lỗi và giám sát Prometheus cho telemetry và quản lý thiết bị."
+        - "Quản lý toàn bộ hạ tầng AWS của sản phẩm — EC2, S3, SES, SNS, Route 53, CloudWatch, CloudTrail và Grafana — bao gồm tính toán, lưu trữ, email và thông báo đẩy, DNS, giám sát và nhật ký kiểm toán."
         - "Dẫn dắt triển khai backend trên Docker qua GitLab CI cho các bản phát hành dùng container trong đội sản phẩm 8 người."
     stack:
       - "Erlang/OTP"
       - "Mnesia"
-      - "AWS EC2"
+      - "AWS"
+      - "Grafana"
       - "Docker"
       - "GitLab CI"
       - "PostgreSQL"

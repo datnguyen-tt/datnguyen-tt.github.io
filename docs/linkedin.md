@@ -50,16 +50,17 @@ Principal Backend Architect — Erlang/OTP
 - **Company:** 5GenCare
 - **Location:** Hong Kong · Remote
 - **Start / end:** Jun 2023 – Present
-- **Skills to tag:** Erlang/OTP, Mnesia, AWS EC2, Docker, GitLab CI
+- **Skills to tag:** Erlang/OTP, Mnesia, AWS, Grafana, Docker
 
-**Description** (583/2000)
+**Description** (811/2000)
 
 ```text
 • Sole full-time Erlang engineer owning the distributed IoT/AIoT backend (Erlang/OTP, Mnesia) for baby-monitor camera products serving ~150,000 users, mostly in the US.
-• Ran 3 distributed Erlang clusters on 20 AWS EC2 nodes for nursery-camera brands (Motorola Nursery, Chillax, Salus), with fault-tolerant services and Prometheus monitoring for telemetry and device management.
+• Ran distributed Erlang clusters with multiple nodes on AWS for nursery-camera brands (Motorola Nursery, ChillaxCare, Salus), with fault-tolerant services and Prometheus monitoring for telemetry and device management.
+• Managed the product's AWS infrastructure end to end — EC2, S3, SES, SNS, Route 53, CloudWatch, CloudTrail and Grafana — covering compute, storage, email and push notifications, DNS, monitoring and audit logging.
 • Led Docker deployments through GitLab CI for container-based backend releases within an 8-person product team.
 
-Stack: Erlang/OTP, Mnesia, AWS EC2, Docker, GitLab CI, PostgreSQL, Prometheus, TLS/OpenSSL
+Stack: Erlang/OTP, Mnesia, AWS, Grafana, Docker, GitLab CI, PostgreSQL, Prometheus, TLS/OpenSSL
 ```
 
 ### Precision Development (PxD) — Jun 2022 – Jun 2023
