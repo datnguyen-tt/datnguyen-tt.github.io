@@ -81,13 +81,13 @@ experience:
     domain: "iot"
     highlights:
       en:
-        - "Architected and maintained a distributed IoT/AIoT backend with Erlang/OTP and Mnesia, supporting cloud telemetry and device management."
-        - "Designed fault-tolerant Erlang services and Prometheus monitoring for cloud telemetry workflows."
-        - "Led Docker deployments through GitLab CI for container-based backend releases."
+        - "Sole full-time Erlang engineer owning the distributed IoT/AIoT backend (Erlang/OTP, Mnesia) for baby-monitor camera products serving ~150,000 users, mostly in the US."
+        - "Ran production servers across regions for several nursery-camera brands (Motorola Nursery, Chillax, Salus) plus staging, with fault-tolerant services and Prometheus monitoring for telemetry and device management."
+        - "Led Docker deployments through GitLab CI for container-based backend releases within an 8-person product team."
       vi:
-        - "Kiến trúc và duy trì backend IoT/AIoT phân tán bằng Erlang/OTP và Mnesia, phục vụ cloud telemetry và quản lý thiết bị."
-        - "Thiết kế dịch vụ Erlang chịu lỗi và hệ thống giám sát Prometheus cho các luồng cloud telemetry."
-        - "Dẫn dắt triển khai backend trên Docker qua GitLab CI cho các bản phát hành dùng container."
+        - "Kỹ sư Erlang toàn thời gian duy nhất, chịu trách nhiệm backend IoT/AIoT phân tán (Erlang/OTP, Mnesia) cho các sản phẩm camera giám sát em bé với khoảng 150.000 người dùng, chủ yếu tại Mỹ."
+        - "Vận hành server production ở nhiều khu vực cho các thương hiệu camera em bé (Motorola Nursery, Chillax, Salus) cùng môi trường staging, với dịch vụ chịu lỗi và giám sát Prometheus cho telemetry và quản lý thiết bị."
+        - "Dẫn dắt triển khai backend trên Docker qua GitLab CI cho các bản phát hành dùng container trong đội sản phẩm 8 người."
     stack:
       - "Erlang/OTP"
       - "Mnesia"
@@ -111,13 +111,15 @@ experience:
     domain: "telecom"
     highlights:
       en:
-        - "Built distributed voice and text services with Erlang and FreeSWITCH for low-connectivity environments."
+        - "Built distributed voice and text services with Erlang and FreeSWITCH reaching 100,000–200,000 farmers in low-connectivity regions, mostly over IVR, SMS and WhatsApp."
         - "Designed Flask and Cowboy APIs integrating USSD, IVR, SMS, WhatsApp, and Telegram communication flows."
-        - "Instrumented time-sensitive communication paths with metrics and tracing, then diagnosed production faults."
+        - "Maintained 5–6 production servers across locations, instrumenting time-sensitive communication paths with metrics and tracing to diagnose production faults."
+        - "Worked in a 7-person team spread across the US, India, Kenya and Vietnam."
       vi:
-        - "Xây dựng dịch vụ thoại và tin nhắn phân tán bằng Erlang và FreeSWITCH cho môi trường kết nối hạn chế."
+        - "Xây dựng dịch vụ thoại và tin nhắn phân tán bằng Erlang và FreeSWITCH, phục vụ 100.000–200.000 nông dân ở vùng kết nối hạn chế, chủ yếu qua IVR, SMS và WhatsApp."
         - "Thiết kế API bằng Flask và Cowboy, tích hợp các luồng USSD, IVR, SMS, WhatsApp và Telegram."
-        - "Gắn metrics và tracing vào các luồng liên lạc nhạy cảm về thời gian để chẩn đoán sự cố production."
+        - "Duy trì 5–6 server production ở nhiều địa điểm, gắn metrics và tracing vào các luồng liên lạc nhạy cảm về thời gian để chẩn đoán sự cố production."
+        - "Làm việc trong đội 7 người trải rộng tại Mỹ, Ấn Độ, Kenya và Việt Nam."
     stack:
       - "Erlang"
       - "Python"
@@ -144,11 +146,11 @@ experience:
     domain: "network"
     highlights:
       en:
-        - "Delivered Cisco NSO network automation services with Erlang, YANG, NETCONF, and RESTCONF."
+        - "Delivered Cisco NSO network automation services with Erlang, YANG, NETCONF, and RESTCONF in a 6-person Vietnam–Sweden team."
         - "Mapped YANG network models into maintainable domain logic using Domain-Driven Design."
         - "Resolved concurrency defects in Erlang network automation services, strengthening fault tolerance."
       vi:
-        - "Phát triển dịch vụ tự động hóa mạng Cisco NSO bằng Erlang, YANG, NETCONF và RESTCONF."
+        - "Phát triển dịch vụ tự động hóa mạng Cisco NSO bằng Erlang, YANG, NETCONF và RESTCONF trong đội 6 người Việt Nam–Thụy Điển."
         - "Chuyển mô hình mạng YANG thành domain logic dễ bảo trì bằng Domain-Driven Design."
         - "Xử lý lỗi concurrency trong dịch vụ tự động hóa mạng Erlang, củng cố khả năng chịu lỗi."
     stack:
@@ -176,10 +178,10 @@ experience:
     domain: "network"
     highlights:
       en:
-        - "Integrated Erlang and YANG services across sites with Cisco's architecture team."
+        - "Worked onsite in Stockholm with the Swedish side of the 6-person team, integrating Erlang and YANG services with Cisco's architecture team."
         - "Led OTP design and BEAM optimization sessions, transferring runtime knowledge to the engineering team."
       vi:
-        - "Tích hợp dịch vụ Erlang và YANG giữa nhiều địa điểm cùng đội ngũ kiến trúc Cisco."
+        - "Làm việc onsite tại Stockholm cùng phía Thụy Điển của đội 6 người, tích hợp dịch vụ Erlang và YANG với đội ngũ kiến trúc Cisco."
         - "Dẫn dắt các buổi chia sẻ về thiết kế OTP và tối ưu BEAM, chuyển giao kiến thức runtime cho đội ngũ kỹ thuật."
     stack:
       - "Erlang"
@@ -199,16 +201,16 @@ experience:
       en: "Ho Chi Minh City, Vietnam"
       vi: "Thành phố Hồ Chí Minh, Việt Nam"
     start: "2016-11"
-    end: "2019-11"
+    end: "2019-10"
     remote: false
     domain: "telecom"
     highlights:
       en:
-        - "Developed Ericsson IMS SBG components for media control and SIP, Diameter, and Megaco protocol handling."
+        - "Developed Ericsson IMS Session Border Gateway (SBG) components for media control and SIP, Diameter, and Megaco protocol handling in an 8-person Vietnam–Sweden team with daily cross-site syncs."
         - "Automated Jenkins CI pipelines for Erlang and Python telecom components, making build and test workflows repeatable."
         - "Led testing across IMS protocol and media-control paths using Wireshark."
       vi:
-        - "Phát triển thành phần Ericsson IMS SBG cho media control và xử lý các giao thức SIP, Diameter, Megaco."
+        - "Phát triển thành phần Ericsson IMS Session Border Gateway (SBG) cho media control và xử lý các giao thức SIP, Diameter, Megaco trong đội 8 người Việt Nam–Thụy Điển, đồng bộ hằng ngày giữa hai site."
         - "Tự động hóa pipeline Jenkins CI cho các thành phần viễn thông Erlang và Python, chuẩn hóa luồng build và test."
         - "Dẫn dắt kiểm thử các luồng giao thức IMS và media control bằng Wireshark."
     stack:
