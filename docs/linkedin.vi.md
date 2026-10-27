@@ -50,16 +50,16 @@ Kiến trúc sư Backend Cấp cao — Erlang/OTP
 - **Company:** 5GenCare
 - **Location:** Hong Kong · Từ xa
 - **Start / end:** Th6 2023 – Hiện tại
-- **Skills to tag:** Erlang/OTP, Mnesia, Docker, GitLab CI, PostgreSQL
+- **Skills to tag:** Erlang/OTP, Mnesia, AWS EC2, Docker, GitLab CI
 
-**Description** (609/2000)
+**Description** (603/2000)
 
 ```text
 • Kỹ sư Erlang toàn thời gian duy nhất, chịu trách nhiệm backend IoT/AIoT phân tán (Erlang/OTP, Mnesia) cho các sản phẩm camera giám sát em bé với khoảng 150.000 người dùng, chủ yếu tại Mỹ.
-• Vận hành server production ở nhiều khu vực cho các thương hiệu camera em bé (Motorola Nursery, Chillax, Salus) cùng môi trường staging, với dịch vụ chịu lỗi và giám sát Prometheus cho telemetry và quản lý thiết bị.
+• Vận hành 3 cụm Erlang phân tán trên 20 node AWS EC2 cho các thương hiệu camera em bé (Motorola Nursery, Chillax, Salus), với dịch vụ chịu lỗi và giám sát Prometheus cho telemetry và quản lý thiết bị.
 • Dẫn dắt triển khai backend trên Docker qua GitLab CI cho các bản phát hành dùng container trong đội sản phẩm 8 người.
 
-Stack: Erlang/OTP, Mnesia, Docker, GitLab CI, PostgreSQL, Prometheus, TLS/OpenSSL
+Stack: Erlang/OTP, Mnesia, AWS EC2, Docker, GitLab CI, PostgreSQL, Prometheus, TLS/OpenSSL
 ```
 
 ### Precision Development (PxD) — Th6 2022 – Th6 2023

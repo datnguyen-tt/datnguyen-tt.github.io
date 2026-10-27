@@ -82,15 +82,16 @@ experience:
     highlights:
       en:
         - "Sole full-time Erlang engineer owning the distributed IoT/AIoT backend (Erlang/OTP, Mnesia) for baby-monitor camera products serving ~150,000 users, mostly in the US."
-        - "Ran production servers across regions for several nursery-camera brands (Motorola Nursery, Chillax, Salus) plus staging, with fault-tolerant services and Prometheus monitoring for telemetry and device management."
+        - "Ran 3 distributed Erlang clusters on 20 AWS EC2 nodes for nursery-camera brands (Motorola Nursery, Chillax, Salus), with fault-tolerant services and Prometheus monitoring for telemetry and device management."
         - "Led Docker deployments through GitLab CI for container-based backend releases within an 8-person product team."
       vi:
         - "Kỹ sư Erlang toàn thời gian duy nhất, chịu trách nhiệm backend IoT/AIoT phân tán (Erlang/OTP, Mnesia) cho các sản phẩm camera giám sát em bé với khoảng 150.000 người dùng, chủ yếu tại Mỹ."
-        - "Vận hành server production ở nhiều khu vực cho các thương hiệu camera em bé (Motorola Nursery, Chillax, Salus) cùng môi trường staging, với dịch vụ chịu lỗi và giám sát Prometheus cho telemetry và quản lý thiết bị."
+        - "Vận hành 3 cụm Erlang phân tán trên 20 node AWS EC2 cho các thương hiệu camera em bé (Motorola Nursery, Chillax, Salus), với dịch vụ chịu lỗi và giám sát Prometheus cho telemetry và quản lý thiết bị."
         - "Dẫn dắt triển khai backend trên Docker qua GitLab CI cho các bản phát hành dùng container trong đội sản phẩm 8 người."
     stack:
       - "Erlang/OTP"
       - "Mnesia"
+      - "AWS EC2"
       - "Docker"
       - "GitLab CI"
       - "PostgreSQL"
