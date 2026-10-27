@@ -13,7 +13,8 @@
     "check": "astro check",
     "test": "vitest run",
     "og": "node scripts/og.mjs",
-    "pdf": "node scripts/pdf.mjs"
+    "pdf": "node scripts/pdf.mjs",
+    "linkedin": "node scripts/linkedin.mjs"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
