@@ -138,6 +138,26 @@ export function mountBeamCluster(mount: HTMLElement): void {
   let hoveredHit: HitTarget = null;
   let demoCursor = 0;
 
+  // The visitor's mouse pointer joins the mesh as a 7th "client" node:
+  // it links to the nearest nodes, exchanges packets, and goes `nodedown`
+  // when it idles or leaves the hero. Fine pointers + motion-on only.
+  const PTR_MAX_LINK = 340;
+  const PTR_MAX_LINKS = 3;
+  const PTR_IDLE_MS = 2600;
+  const finePointer = window.matchMedia("(pointer: fine)");
+  const ptr = {
+    x: 0,
+    y: 0,
+    sx: 0,
+    sy: 0,
+    state: "down" as "up" | "down",
+    changedMs: -1e9,
+    lastMoveMs: 0,
+    nextPktMs: 0,
+    links: [] as number[],
+    packets: [] as { idx: number; t: number; out: boolean }[],
+  };
+
   let simNow = performance.now();
   let frameDt = 16.67;
   let spawnAccumMs = 0;
@@ -1001,6 +1021,7 @@ export function mountBeamCluster(mount: HTMLElement): void {
 
     packetPool.sweep(advancePacket);
     trimPacketLabelsToMax(2);
+    updatePointerNode(dtMs, nowMs);
 
     // Update HUD msgs/s counter every 900ms
     hudAccumMs += dtMs;
@@ -1074,8 +1095,152 @@ export function mountBeamCluster(mount: HTMLElement): void {
     // 3. Draw BEAM VM node cards (strictly outside `.hero__copy` and `.terminal`)
     drawNodeCards(ctx, nowMs);
 
+    // 4. Visitor pointer as a client node (above cards, below nothing)
+    drawPointerNode(ctx, nowMs);
+
     ctx.globalAlpha = 1;
   }
+
+  function setPointerState(next: "up" | "down", nowMs: number): void {
+    if (ptr.state === next) return;
+    ptr.state = next;
+    ptr.changedMs = nowMs;
+    if (next === "down") {
+      ptr.links = [];
+      ptr.packets.length = 0;
+    } else {
+      ptr.sx = ptr.x;
+      ptr.sy = ptr.y;
+    }
+    mount.dataset["pointerNode"] = next;
+  }
+
+  function updatePointerNode(dtMs: number, nowMs: number): void {
+    if (!isMotionOn() || !finePointer.matches) {
+      setPointerState("down", nowMs);
+      return;
+    }
+    if (ptr.state !== "up") return;
+    if (nowMs - ptr.lastMoveMs > PTR_IDLE_MS) {
+      setPointerState("down", nowMs);
+      return;
+    }
+    const k = 1 - Math.exp(-dtMs / 70);
+    ptr.sx += (ptr.x - ptr.sx) * k;
+    ptr.sy += (ptr.y - ptr.sy) * k;
+
+    // Nearest live nodes within range
+    const ranked: { idx: number; d: number }[] = [];
+    for (let i = 0; i < nodes.length; i++) {
+      const n = nodes[i]!;
+      if (n.lifecycle === "down") continue;
+      const d = Math.hypot(n.cx - ptr.sx, n.cy - ptr.sy);
+      if (d <= PTR_MAX_LINK) ranked.push({ idx: i, d });
+    }
+    ranked.sort((a, b) => a.d - b.d);
+    ptr.links = ranked.slice(0, PTR_MAX_LINKS).map((r) => r.idx);
+
+    if (ptr.links.length > 0 && nowMs >= ptr.nextPktMs && ptr.packets.length < 6) {
+      ptr.packets.push({
+        idx: ptr.links[Math.floor(Math.random() * ptr.links.length)]!,
+        t: 0,
+        out: Math.random() < 0.5,
+      });
+      ptr.nextPktMs = nowMs + 480;
+    }
+    for (let i = ptr.packets.length - 1; i >= 0; i--) {
+      const p = ptr.packets[i]!;
+      p.t += dtMs / 420;
+      if (p.t >= 1 || !ptr.links.includes(p.idx)) ptr.packets.splice(i, 1);
+    }
+  }
+
+  function drawPointerNode(ctx: CanvasRenderingContext2D, nowMs: number): void {
+    const since = nowMs - ptr.changedMs;
+    const fading = ptr.state === "down" && since < 900;
+    if (ptr.state === "down" && !fading) return;
+
+    ctx.save();
+    if (ptr.state === "up") {
+      for (const idx of ptr.links) {
+        const n = nodes[idx]!;
+        const d = Math.hypot(n.cx - ptr.sx, n.cy - ptr.sy);
+        ctx.globalAlpha = Math.max(0.12, 1 - d / PTR_MAX_LINK) * 0.7;
+        ctx.strokeStyle = palette.msg;
+        ctx.lineWidth = 1;
+        ctx.setLineDash(DASH_REROUTE);
+        ctx.beginPath();
+        ctx.moveTo(ptr.sx, ptr.sy);
+        ctx.lineTo(n.cx, n.cy);
+        ctx.stroke();
+      }
+      ctx.setLineDash(NO_DASH);
+      for (const p of ptr.packets) {
+        const n = nodes[p.idx]!;
+        const f = p.out ? p.t : 1 - p.t;
+        ctx.globalAlpha = 0.95;
+        ctx.fillStyle = palette.protoErlang;
+        ctx.beginPath();
+        ctx.arc(
+          ptr.sx + (n.cx - ptr.sx) * f,
+          ptr.sy + (n.cy - ptr.sy) * f,
+          2.6,
+          0,
+          Math.PI * 2,
+        );
+        ctx.fill();
+      }
+    }
+
+    // Client node: dot + ring
+    const fade = fading ? 1 - since / 900 : 1;
+    const joining = ptr.state === "up" && since < 600;
+    ctx.globalAlpha = 0.9 * fade;
+    ctx.fillStyle = fading ? palette.accentText : palette.msg;
+    ctx.beginPath();
+    ctx.arc(ptr.sx, ptr.sy, 3.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.globalAlpha = (joining ? 0.9 - since / 700 : 0.5) * fade;
+    ctx.strokeStyle = fading ? palette.accentText : joining ? palette.ok : palette.msg;
+    ctx.lineWidth = 1.25;
+    ctx.beginPath();
+    ctx.arc(ptr.sx, ptr.sy, joining ? 8 + since / 40 : fading ? 8 + since / 60 : 8, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Label: hover hint > nodeup/nodedown > id
+    let label = "client@you";
+    if (fading) label = "nodedown";
+    else if (joining) label = "nodeup";
+    else if (hoveredHit?.kind === "worker") label = "click → exit(Pid, kill)";
+    else if (hoveredHit?.kind === "node") label = "click → nodedown";
+    ctx.font = palette.mono9;
+    ctx.globalAlpha = (hoveredHit && !fading ? 0.95 : 0.7) * fade;
+    ctx.fillStyle = fading ? palette.accentText : joining ? palette.ok : palette.textMuted;
+    ctx.fillText(label, ptr.sx + 12, ptr.sy - 10);
+    ctx.restore();
+  }
+
+  function onHeroPointerMove(e: PointerEvent): void {
+    if (e.pointerType !== "mouse" || !finePointer.matches || !isMotionOn()) return;
+    const cr = managed!.canvas.getBoundingClientRect();
+    const inside =
+      e.clientX >= cr.left && e.clientX <= cr.right &&
+      e.clientY >= cr.top && e.clientY <= cr.bottom;
+    const nowMs = performance.now();
+    if (!inside) {
+      setPointerState("down", nowMs);
+      return;
+    }
+    ptr.x = e.clientX - cr.left;
+    ptr.y = e.clientY - cr.top;
+    ptr.lastMoveMs = nowMs;
+    setPointerState("up", nowMs);
+  }
+  // Listen on the document: copy/terminal overlays sit above the canvas.
+  document.addEventListener("pointermove", onHeroPointerMove, { passive: true });
+  document.documentElement.addEventListener("pointerleave", () =>
+    setPointerState("down", performance.now()),
+  );
 
   function drawMeshLinks(
     ctx: CanvasRenderingContext2D,
