@@ -182,7 +182,7 @@ experience:
     domain: "network"
     highlights:
       en:
-        - "Onsite with Cisco’s ConfD/NSO core architecture team in Stockholm for knowledge transfer on Cisco’s ConfD/NSO architecture."
+        - "Onsite with Cisco's ConfD/NSO core architecture team in Stockholm for knowledge transfer on Cisco's ConfD/NSO architecture."
         - "Maintained services using Erlang, YANG models, and NETCONF/RESTCONF."
       vi:
         - "Làm việc onsite tại Stockholm cùng đội kiến trúc lõi ConfD/NSO của Cisco để nhận chuyển giao kiến thức về kiến trúc ConfD/NSO."

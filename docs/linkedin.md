@@ -126,7 +126,7 @@ Erlang Consultant for Cisco (via DEK Technologies)
 **Description** (259/2000)
 
 ```text
-• Onsite with Cisco’s ConfD/NSO core architecture team in Stockholm for knowledge transfer on Cisco’s ConfD/NSO architecture.
+• Onsite with Cisco's ConfD/NSO core architecture team in Stockholm for knowledge transfer on Cisco's ConfD/NSO architecture.
 • Maintained services using Erlang, YANG models, and NETCONF/RESTCONF.
 
 Stack: ConfD/NSO, YANG, NETCONF, RESTCONF, C++, Jenkins, Jira
