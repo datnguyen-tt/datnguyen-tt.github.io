@@ -121,15 +121,15 @@ Tư vấn Erlang cho Cisco (qua DEK Technologies)
 - **Company:** DEK Technologies Sweden
 - **Location:** Stockholm, Thụy Điển
 - **Start / end:** Th10 2019 – Th12 2019
-- **Skills to tag:** Erlang, YANG, C++, NETCONF, RESTCONF
+- **Skills to tag:** ConfD/NSO, YANG, NETCONF, RESTCONF, C++
 
-**Description** (300/2000)
+**Description** (256/2000)
 
 ```text
-• Làm việc onsite tại Stockholm cùng phía Thụy Điển của đội 6 người, tích hợp dịch vụ Erlang và YANG với đội ngũ kiến trúc Cisco.
-• Dẫn dắt các buổi chia sẻ về thiết kế OTP và tối ưu BEAM, chuyển giao kiến thức runtime cho đội ngũ kỹ thuật.
+• Làm việc onsite tại Stockholm cùng đội kiến trúc lõi ConfD/NSO của Cisco để nhận chuyển giao kiến thức về kiến trúc ConfD/NSO.
+• Bảo trì dịch vụ dùng Erlang, mô hình YANG và NETCONF/RESTCONF.
 
-Stack: Erlang, YANG, C++, NETCONF, RESTCONF, Jenkins, Jira
+Stack: ConfD/NSO, YANG, NETCONF, RESTCONF, C++, Jenkins, Jira
 ```
 
 ### DEK Technologies Vietnam — Th11 2016 – Th10 2019
@@ -184,6 +184,7 @@ NETCONF
 RESTCONF
 YANG
 Cisco NSO
+ConfD
 Mnesia
 PostgreSQL
 ETS/DETS
