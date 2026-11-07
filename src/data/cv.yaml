@@ -182,17 +182,17 @@ experience:
     domain: "network"
     highlights:
       en:
-        - "Worked onsite in Stockholm with the Swedish side of the 6-person team, integrating Erlang and YANG services with Cisco's architecture team."
-        - "Led OTP design and BEAM optimization sessions, transferring runtime knowledge to the engineering team."
+        - "Onsite with Cisco’s ConfD/NSO core architecture team in Stockholm for knowledge transfer on Cisco’s ConfD/NSO architecture."
+        - "Maintained services using Erlang, YANG models, and NETCONF/RESTCONF."
       vi:
-        - "Làm việc onsite tại Stockholm cùng phía Thụy Điển của đội 6 người, tích hợp dịch vụ Erlang và YANG với đội ngũ kiến trúc Cisco."
-        - "Dẫn dắt các buổi chia sẻ về thiết kế OTP và tối ưu BEAM, chuyển giao kiến thức runtime cho đội ngũ kỹ thuật."
+        - "Làm việc onsite tại Stockholm cùng đội kiến trúc lõi ConfD/NSO của Cisco để nhận chuyển giao kiến thức về kiến trúc ConfD/NSO."
+        - "Bảo trì dịch vụ dùng Erlang, mô hình YANG và NETCONF/RESTCONF."
     stack:
-      - "Erlang"
+      - "ConfD/NSO"
       - "YANG"
-      - "C++"
       - "NETCONF"
       - "RESTCONF"
+      - "C++"
       - "Jenkins"
       - "Jira"
 
@@ -272,6 +272,7 @@ skills:
       - "RESTCONF"
       - "YANG"
       - "Cisco NSO"
+      - "ConfD"
 
   - id: "data-storage"
     name:

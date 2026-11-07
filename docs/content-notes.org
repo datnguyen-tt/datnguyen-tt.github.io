@@ -60,10 +60,9 @@ while the employment title remains Principal.
 - Scale of the Cisco NSO deployment.
 
 ** DEK Technologies Sweden — Cisco
-- Number of sites, services, or engineers involved.
-- Delivery outcome from the cross-site integration.
-- Number of OTP/BEAM sessions delivered and audience size.
-- Performance improvement from BEAM optimization work.
+- Scope of ConfD/NSO architecture topics covered in knowledge transfer.
+- Types of services maintained (Erlang, YANG, NETCONF/RESTCONF).
+- Concrete learning outcomes applied after returning to Vietnam.
 
 ** DEK Technologies Vietnam — Ericsson
 - Traffic scale, node count, or deployment footprint for IMS SBG.
