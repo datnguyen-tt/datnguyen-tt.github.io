@@ -11,12 +11,12 @@ Senior Erlang/OTP Engineer · Backend Architecture | Distributed Systems · Erla
 ```
 
 - **Location:** Remote
-- **Website:** https://datnguyen-tt.github.io
+- **Website:** https://tida.dev
 - **Custom profile URL:** https://www.linkedin.com/in/datnguyen-t
 
 ## About
 
-**About** (813/2600)
+**About** (799/2600)
 
 ```text
 Fault-tolerant Erlang/OTP systems for telecom, networking and IoT.
@@ -32,7 +32,7 @@ I start from OTP supervision and let-it-crash discipline, then instrument servic
 
 Open to senior and lead remote backend roles
 
-→ https://datnguyen-tt.github.io
+→ https://tida.dev
 
 ✉ datttn.work@gmail.com
 ```

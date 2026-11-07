@@ -2,7 +2,7 @@ import { defineConfig } from "astro/config";
 import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
-  site: "https://datnguyen-tt.github.io",
+  site: "https://tida.dev",
   // Old URLs from the al-folio site and the former /datnguyenfolio/ project page.
   redirects: {
     "/datnguyenfolio": "/",

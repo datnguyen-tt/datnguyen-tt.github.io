@@ -34,7 +34,7 @@ confirm fork/original before featuring).
 
 ** Profile
 - Confirm preferred public location (site currently shows Remote).
-- Confirm site URL remains =https://datnguyen-tt.github.io=.
+- Site URL is =https://tida.dev= (custom domain).
 
 ** 5GenCare — scope metrics (Principal title credibility)
 One honest number from any of these would strengthen impact bullets:

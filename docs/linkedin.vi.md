@@ -11,12 +11,12 @@ Kỹ sư Erlang/OTP Senior · Kiến trúc Backend | Hệ thống phân tán · 
 ```
 
 - **Location:** Làm việc từ xa
-- **Website:** https://datnguyen-tt.github.io
+- **Website:** https://tida.dev
 - **Custom profile URL:** https://www.linkedin.com/in/datnguyen-t
 
 ## About
 
-**About** (847/2600)
+**About** (833/2600)
 
 ```text
 Hệ thống Erlang/OTP chịu lỗi cho viễn thông, mạng và IoT.
@@ -32,7 +32,7 @@ Tôi bắt đầu từ supervision và triết lý let-it-crash của OTP, rồi
 
 Sẵn sàng các vị trí senior và lead backend làm việc từ xa
 
-→ https://datnguyen-tt.github.io
+→ https://tida.dev
 
 ✉ datttn.work@gmail.com
 ```

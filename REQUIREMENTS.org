@@ -145,7 +145,7 @@ Ràng buộc hiệu ứng:
   khi build.
 - Test: Vitest (engine logic), Playwright (E2E + visual regression),
   Lighthouse CI, axe-core.
-- Deploy: GitHub Actions → GitHub Pages (=datnguyen-tt.github.io=).
+- Deploy: GitHub Actions → GitHub Pages (custom domain =tida.dev=).
 
 * 9. Đội agent & model
 Nguyên tắc: *người viết code và người review dùng model khác nhau* để tránh
