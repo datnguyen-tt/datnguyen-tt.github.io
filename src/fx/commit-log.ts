@@ -14,6 +14,14 @@ export function mountCommitLog(mount: HTMLElement): void {
 
   const offsetValueEl = mount.querySelector<HTMLElement>("[data-consumer-offset]");
   const lagValueEl = mount.querySelector<HTMLElement>("[data-consumer-lag]");
+  // Every state label keeps the SSR "✓ committed" shape and the badge has a
+  // fixed min-width (Experience.astro), so swapping labels never reflows the
+  // card: a wrap change here used to shift the whole page on phones.
+  const LABEL = {
+    committed: `✓ ${mount.dataset["committedLabel"] ?? "committed"}`,
+    active: "▸ consuming",
+    pending: "· queued",
+  };
   const stateBadges = entries.map((entry) =>
     entry.querySelector<HTMLElement>(".commit-state"),
   );
@@ -36,13 +44,13 @@ export function mountCommitLog(mount: HTMLElement): void {
 
       if (allCommitted || idx < activeIdx) {
         entry.classList.add("is-committed");
-        if (badge) badge.textContent = "committed";
+        if (badge) badge.textContent = LABEL.committed;
       } else if (idx === activeIdx) {
         entry.classList.add("is-active");
-        if (badge) badge.textContent = "consuming";
+        if (badge) badge.textContent = LABEL.active;
       } else {
         entry.classList.add("is-pending");
-        if (badge) badge.textContent = "queued";
+        if (badge) badge.textContent = LABEL.pending;
       }
     });
 

@@ -1,6 +1,6 @@
 ---
 import { cv, t, type Lang } from "../data/cv";
-import { ui } from "../i18n/ui";
+import { ui, SECTION_ORDER } from "../i18n/ui";
 import { withBase } from "../lib/url";
 import Monogram from "./Monogram.astro";
 
@@ -10,6 +10,34 @@ interface Props {
 const { lang } = Astro.props;
 const text = ui[lang];
 const { meta, hero } = cv;
+
+// Read-only snapshot of the CV for the interactive Erlang shell (src/fx/erl-shell.ts).
+const shellData = {
+  prompt: hero.terminal.length + 1,
+  name: meta.name,
+  fullName: meta.fullName,
+  role: t(meta.role, lang),
+  location: t(meta.location, lang),
+  availability: t(meta.availability, lang),
+  email: meta.email,
+  links: { github: meta.links.github, linkedin: meta.links.linkedin, site: meta.links.site },
+  pdf: withBase(meta.pdf),
+  canned: hero.terminal.map((l) => ({ input: l.input, output: l.output })),
+  jobs: cv.experience.map((j) => ({
+    company: j.company,
+    role: t(j.role, lang),
+    start: j.start,
+    end: j.end,
+    location: t(j.location, lang),
+  })),
+  skills: cv.skills.map((g) => ({ id: g.id, name: t(g.name, lang), children: g.children })),
+  projects: cv.projects.map((p) => ({ name: p.name, repo: p.repo, description: t(p.description, lang) })),
+  education: cv.education.map((e) => ({ degree: t(e.degree, lang), school: e.school, start: e.start, end: e.end })),
+  languages: cv.languages.map((l) => ({ name: t(l.name, lang), level: t(l.level, lang) })),
+  sections: SECTION_ORDER,
+  text: text.shell,
+};
+const shellJson = JSON.stringify(shellData).replace(/</g, "\\u003c");
 ---
 
 <section id="hero" class="section hero" aria-labelledby="hero-title">
@@ -78,6 +106,7 @@ const { meta, hero } = cv;
         }
         <p class="ln"><span class="p">{`${hero.terminal.length + 1}>`}</span> <span class="cursor" aria-hidden="true"></span></p>
       </div>
+      <script type="application/json" data-shell-data is:inline set:html={shellJson} />
       <div class="terminal__live js-only no-print" data-terminal-live aria-hidden="true" translate="no">
         <p class="terminal__log terminal__log--muted" data-log-seed>
           {text.fx.terminalLivePlaceholder}
@@ -493,21 +522,116 @@ const { meta, hero } = cv;
   :global(html.terminal-typing-init) .terminal__body .ln:first-child .i {
     visibility: hidden;
   }
-  .terminal__body .ln {
+  .terminal__body :global(.ln) {
     margin: 0;
   }
-  .terminal__body .ln.o {
+  /* :global so lines added by the interactive shell get the same look */
+  .terminal__body :global(.ln.o) {
     margin-bottom: 0.35rem;
   }
-  .terminal__body .p {
+  .terminal__body :global(.p) {
     color: var(--text-muted);
   }
-  .terminal__body .i {
+  .terminal__body :global(.i) {
     color: var(--msg-text);
   }
-  .terminal__body .o {
+  .terminal__body :global(.o) {
     color: var(--text);
   }
+  /* ---------- Interactive shell (src/fx/erl-shell.ts) ---------- */
+  .terminal__bar :global(.terminal__hint) {
+    margin-left: auto;
+    color: var(--msg-text);
+    font-size: 0.7rem;
+    opacity: 0.85;
+  }
+  .terminal__body:global(.is-interactive) {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+  .terminal__body :global(.ln--input) {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5ch;
+  }
+  /* the block cursor lives in the ghost line now; never beside the input */
+  .terminal__body :global(.ln--input > .cursor) {
+    display: none;
+  }
+  .terminal__body :global(.shell__field) {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+  }
+  .terminal__body :global(.shell__ghost) {
+    position: absolute;
+    inset: 0 auto 0 0;
+    display: none;
+    align-items: center;
+    white-space: pre;
+    color: var(--msg-text);
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  .terminal__body :global(.shell__field.is-idle .shell__ghost) {
+    display: inline-flex;
+  }
+  .terminal__body :global(.shell__field.is-idle .shell__input::placeholder) {
+    color: transparent;
+  }
+  .terminal__body :global(.shell__ghost .cursor) {
+    margin-left: 1px;
+    vertical-align: middle;
+  }
+  .terminal__body :global(.shell__input) {
+    flex: 1;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--msg-text);
+    font: inherit;
+    caret-color: var(--accent-text);
+    outline: none;
+  }
+  .terminal__body :global(.shell__input::placeholder) {
+    color: var(--text-muted);
+    opacity: 0.55;
+  }
+  .terminal__body :global(.ln--input:focus-within) {
+    box-shadow: inset 2px 0 0 var(--accent-text);
+    margin-left: -0.6rem;
+    padding-left: calc(0.6rem - 2px);
+  }
+  @media (pointer: coarse) {
+    /* iOS zooms into inputs under 16px */
+    .terminal__body :global(.shell__input) {
+      font-size: 16px;
+    }
+  }
+  .terminal__body :global(.ln.o.shell__cont) {
+    margin-bottom: 0;
+  }
+  .terminal__body :global(.shell__err) {
+    color: var(--accent-text);
+  }
+  .terminal__body :global(.shell__comment) {
+    color: var(--text-muted);
+  }
+  .terminal__body :global(.shell__cmd) {
+    color: var(--msg-text);
+    white-space: pre;
+  }
+  .terminal__body :global(.o a) {
+    color: var(--msg-text);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
   .cursor {
     display: inline-block;
     width: 0.55em;

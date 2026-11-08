@@ -113,6 +113,8 @@ export function mountTerminalTyping(mount: HTMLElement): void {
       }
     }
     mount.dataset["typingState"] = "done";
+    // The scripted session is over: hand the last prompt to the real shell.
+    void import("./erl-shell").then((m) => m.mountErlShell(mount));
   }
 
   function resetAnimation(): void {

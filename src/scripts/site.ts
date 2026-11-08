@@ -80,28 +80,64 @@ if (langLink) {
 }
 
 // --- Active section highlight ----------------------------------------
-const links = new Map<string, HTMLAnchorElement>();
+// One scroll-spy for the header nav and the scroll rail. Emits
+// `sectionchange` (detail: section id) whenever the active section changes.
+const links = new Map<string, HTMLAnchorElement[]>();
 document
-  .querySelectorAll<HTMLAnchorElement>('.site-nav a[href^="#"]')
-  .forEach((a) => links.set(a.hash.slice(1), a));
+  .querySelectorAll<HTMLAnchorElement>(
+    '.site-nav a[href^="#"], a[data-rail-node]',
+  )
+  .forEach((a) => {
+    const id = a.hash.slice(1);
+    links.set(id, [...(links.get(id) ?? []), a]);
+  });
 
 if ("IntersectionObserver" in window && links.size) {
+  const ids = [...links.keys()];
+  let active = "";
+  let spied = "";
+  const setActive = (id: string): void => {
+    if (id === active) return;
+    active = id;
+    links.forEach((as, key) =>
+      as.forEach((a) => {
+        if (key === id) a.setAttribute("aria-current", "location");
+        else a.removeAttribute("aria-current");
+      }),
+    );
+    window.dispatchEvent(new CustomEvent<string>("sectionchange", { detail: id }));
+  };
+  // A short last section may never reach the spy band: at the page bottom,
+  // the last section wins.
+  const atBottom = (): boolean =>
+    innerHeight + scrollY >= document.documentElement.scrollHeight - 2;
+  const resolve = (): void => {
+    const last = ids[ids.length - 1] ?? "";
+    setActive(atBottom() && spied ? last : spied);
+  };
   const io = new IntersectionObserver(
     (entries) => {
-      for (const e of entries) {
-        if (!e.isIntersecting) continue;
-        links.forEach((a, id) => {
-          if (id === e.target.id) a.setAttribute("aria-current", "location");
-          else a.removeAttribute("aria-current");
-        });
-      }
+      for (const e of entries) if (e.isIntersecting) spied = e.target.id;
+      resolve();
     },
     { rootMargin: "-35% 0px -60% 0px" },
   );
-  links.forEach((_, id) => {
+  ids.forEach((id) => {
     const el = document.getElementById(id);
     if (el) io.observe(el);
   });
+  let raf = 0;
+  addEventListener(
+    "scroll",
+    () => {
+      if (!raf)
+        raf = requestAnimationFrame(() => {
+          raf = 0;
+          resolve();
+        });
+    },
+    { passive: true },
+  );
 }
 
 // --- Copy BibTeX -----------------------------------------------------

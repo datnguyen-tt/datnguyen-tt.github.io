@@ -1,0 +1,215 @@
+---
+import type { Lang } from "../data/cv";
+import { ui } from "../i18n/ui";
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const text = ui[lang];
+const ids = [
+  "about",
+  "experience",
+  "skills",
+  "projects",
+  "publications",
+  "education",
+  "contact",
+] as const;
+---
+
+<div class="rail js-only" data-rail>
+  <nav class="rail__nav" aria-label={text.rail.label}>
+    <span class="rail__line" aria-hidden="true"></span>
+    <span class="rail__packet" data-rail-packet aria-hidden="true"></span>
+    <ol>
+      {
+        ids.map((id) => (
+          <li>
+            <a href={`#${id}`} data-rail-node={id}>
+              <span class="rail__dot" aria-hidden="true"></span>
+              <span class="rail__label">{id}@cv</span>
+              <span class="sr-only">{text.nav[id]}</span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </nav>
+
+  <a class="to-top" href="#main" data-to-top data-label={text.rail.top} hidden>
+    <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+      <path d="M8 13V3M3.5 7.5 8 3l4.5 4.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+    </svg>
+    <span class="to-top__label">{text.rail.top}</span>
+    <code class="to-top__code" aria-hidden="true" data-to-top-code>ping(hero@cv)</code>
+  </a>
+  <span class="sr-only" role="status" data-to-top-live></span>
+</div>
+
+<style>
+  .rail__nav {
+    position: fixed;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 40;
+    height: min(60vh, 26rem);
+    display: none;
+    opacity: 0;
+    visibility: hidden; /* also removes the links from the tab order */
+    transition: opacity 0.3s, visibility 0.3s;
+  }
+  .rail[data-on] .rail__nav {
+    opacity: 1;
+    visibility: visible;
+  }
+  @media (min-width: 1100px) {
+    .rail__nav {
+      display: block;
+    }
+  }
+  .rail__line {
+    position: absolute;
+    right: 0.4rem;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--border-strong);
+  }
+  .rail__packet {
+    position: absolute;
+    right: calc(0.4rem - 3px);
+    top: 0;
+    width: 7px;
+    height: 7px;
+    margin-top: -3px;
+    border-radius: 50%;
+    background: var(--msg);
+    box-shadow: 0 0 10px 2px var(--msg);
+    transform: translateY(calc(var(--p, 0) * 1px));
+    will-change: transform;
+  }
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  a[data-rail-node] {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.2rem 0;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-decoration: none;
+  }
+  .rail__label {
+    position: absolute;
+    right: 1.6rem;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(6px);
+    transition: opacity 0.2s, transform 0.2s;
+    background: var(--bg-elev);
+    padding: 0.1rem 0.4rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  a[data-rail-node]:hover .rail__label,
+  a[data-rail-node]:focus-visible .rail__label,
+  a[data-rail-node][aria-current="location"] .rail__label {
+    opacity: 1;
+    transform: none;
+  }
+  .rail__dot {
+    width: 9px;
+    height: 9px;
+    margin-right: calc(0.4rem - 4px);
+    border-radius: 50%;
+    background: var(--bg);
+    border: 1px solid var(--border-strong);
+    position: relative;
+    z-index: 1;
+    transition: background 0.25s, border-color 0.25s;
+  }
+  a[data-rail-node][data-passed] .rail__dot {
+    background: var(--msg);
+    border-color: var(--msg);
+  }
+  a[data-rail-node][aria-current="location"] {
+    color: var(--text);
+  }
+  a[data-rail-node]:focus-visible,
+  .to-top:focus-visible {
+    outline: 2px solid var(--focus, var(--msg));
+    outline-offset: 3px;
+  }
+
+  .to-top {
+    position: fixed;
+    right: max(1rem, env(safe-area-inset-right));
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    z-index: 45;
+    min-width: 44px;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.8rem;
+    border: 1px solid var(--border-strong);
+    border-radius: 999px;
+    background: var(--bg-elev);
+    color: var(--text);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    text-decoration: none;
+    box-shadow: 0 4px 18px rgb(0 0 0 / 0.25);
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.25s, transform 0.25s, border-color 0.2s;
+  }
+  .to-top[data-show] {
+    opacity: 1;
+    transform: none;
+  }
+  .to-top[hidden] {
+    display: none;
+  }
+  .to-top:hover {
+    border-color: var(--msg);
+  }
+  .to-top__code {
+    display: none;
+    color: var(--msg-text);
+    font-size: 0.72rem;
+  }
+  @media (min-width: 640px) {
+    .to-top:hover .to-top__code,
+    .to-top[data-state] .to-top__code {
+      display: inline;
+    }
+    .to-top:hover .to-top__label,
+    .to-top[data-state] .to-top__label {
+      display: none;
+    }
+  }
+  .to-top[data-state="pong"] {
+    border-color: var(--ok);
+  }
+  .to-top[data-state="pong"] .to-top__code {
+    color: var(--ok);
+  }
+  @media print {
+    .rail {
+      display: none;
+    }
+  }
+</style>

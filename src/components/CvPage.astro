@@ -11,6 +11,7 @@ import Publications from "./Publications.astro";
 import Education from "./Education.astro";
 import Contact from "./Contact.astro";
 import Footer from "./Footer.astro";
+import ScrollRail from "./ScrollRail.astro";
 
 interface Props {
   lang: Lang;
@@ -31,4 +32,5 @@ const { lang } = Astro.props;
     <Contact lang={lang} />
   </main>
   <Footer lang={lang} />
+  <ScrollRail lang={lang} />
 </Base>

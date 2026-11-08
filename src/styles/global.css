@@ -12,6 +12,12 @@ html {
   scroll-padding-top: 6.5rem;
   background: var(--bg);
 }
+/* Phones: the header is a single row (brand · controls · menu icon). */
+@media (max-width: 37.5rem) {
+  html.js {
+    scroll-padding-top: 4.5rem;
+  }
+}
 
 body {
   margin: 0;

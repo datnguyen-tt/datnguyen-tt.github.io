@@ -144,8 +144,8 @@ const s = text.sections.skills;
     content: "";
     position: absolute;
     left: calc(var(--indent) * -1);
-    top: 0;
-    bottom: 0;
+    top: -1px; /* overlap neighbours: no seams at fractional heights */
+    bottom: -1px;
     border-left: 1px solid var(--border-strong);
   }
   .group > .node {
@@ -158,8 +158,12 @@ const s = text.sections.skills;
     top: calc(var(--gap) * -1);
     width: var(--indent);
     height: calc(var(--gap) + 50%);
-    border-left: 1px solid var(--border-strong);
     border-bottom: 1px solid var(--border-strong);
+  }
+  /* the trunk is drawn once by .group::after; only the last elbow turns */
+  .group:last-child > .node::before {
+    border-left: 1px solid var(--border-strong);
+    border-bottom-left-radius: 6px;
   }
 
   .workers {

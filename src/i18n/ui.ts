@@ -6,12 +6,43 @@ export interface SectionText {
   hintSub?: string;
 }
 
+export interface ShellText {
+  inputLabel: string;
+  placeholder: string;
+  hint: string;
+  help: {
+    intro: string;
+    whoami: string;
+    role: string;
+    domains: string;
+    principles: string;
+    experience: string;
+    skills: string;
+    projects: string;
+    education: string;
+    languages: string;
+    contact: string;
+    cv: string;
+    goto: string;
+    hire: string;
+    ping: string;
+    clear: string;
+    keys: string;
+  };
+  undefinedHint: string;
+  syntaxHint: string;
+  halt: string;
+  gotoUsage: string;
+  hire: string;
+}
+
 export interface UI {
   htmlLang: string;
   skip: string;
   navLabel: string;
   menu: string;
   stack: string;
+  rail: { label: string; top: string };
   nav: {
     about: string;
     experience: string;
@@ -51,6 +82,7 @@ export interface UI {
   motion: { label: string; on: string; off: string };
   lang: { switchLabel: string; short: string; code: string };
   terminalTitle: string;
+  shell: ShellText;
   viewRepo: string;
   doi: string;
   bibtex: string;
@@ -107,6 +139,7 @@ export const ui: Record<Lang, UI> = {
     navLabel: "Primary",
     menu: "Menu",
     stack: "Tech stack",
+    rail: { label: "Page route", top: "Back to top" },
     nav: {
       about: "About",
       experience: "Experience",
@@ -171,6 +204,35 @@ export const ui: Record<Lang, UI> = {
       code: "vi",
     },
     terminalTitle: "erl — dat@cv",
+    shell: {
+      inputLabel: "Erlang shell. Type dat:help(). for commands",
+      placeholder: "dat:help().",
+      hint: "try dat:help().",
+      help: {
+        intro: "Commands in the dat module (the trailing dot is optional):",
+        whoami: "who I am",
+        role: "current role, location and availability",
+        domains: "domains I work in",
+        principles: "how I build systems",
+        experience: "work history, newest first",
+        skills: "skills, by supervisor group",
+        projects: "open-source projects",
+        education: "degrees",
+        languages: "spoken languages",
+        contact: "email and profiles",
+        cv: "download the PDF CV",
+        goto: "scroll to a section, e.g. dat:goto(skills).",
+        hire: "the shortest path to a conversation",
+        ping: "is the node up?",
+        clear: "clear the screen (also Ctrl+L)",
+        keys: "↑/↓ history · Tab completes",
+      },
+      undefinedHint: "try dat:help().",
+      syntaxHint: "expressions end with a dot, e.g. dat:whoami().",
+      halt: "nice try: this node is supervised and has been restarted",
+      gotoUsage: "usage: dat:goto(Section) with Section one of",
+      hire: "{ok, \"let's talk\"}: opening your mail client",
+    },
     viewRepo: "View on GitHub",
     doi: "DOI",
     bibtex: "BibTeX",
@@ -232,6 +294,7 @@ export const ui: Record<Lang, UI> = {
     navLabel: "Điều hướng chính",
     menu: "Menu",
     stack: "Công nghệ sử dụng",
+    rail: { label: "Lộ trình trang", top: "Lên đầu trang" },
     nav: {
       about: "Giới thiệu",
       experience: "Kinh nghiệm",
@@ -303,6 +366,35 @@ export const ui: Record<Lang, UI> = {
       code: "en",
     },
     terminalTitle: "erl — dat@cv",
+    shell: {
+      inputLabel: "Erlang shell. Gõ dat:help(). để xem các lệnh",
+      placeholder: "dat:help().",
+      hint: "thử dat:help().",
+      help: {
+        intro: "Các lệnh trong module dat (dấu chấm cuối có thể bỏ):",
+        whoami: "tôi là ai",
+        role: "vị trí hiện tại, nơi làm việc và trạng thái",
+        domains: "các lĩnh vực tôi làm",
+        principles: "cách tôi xây hệ thống",
+        experience: "kinh nghiệm làm việc, mới nhất trước",
+        skills: "kỹ năng, theo nhóm supervisor",
+        projects: "dự án mã nguồn mở",
+        education: "bằng cấp",
+        languages: "ngôn ngữ",
+        contact: "email và các trang hồ sơ",
+        cv: "tải CV bản PDF",
+        goto: "cuộn tới một mục, ví dụ dat:goto(skills).",
+        hire: "đường ngắn nhất để trò chuyện",
+        ping: "node có đang chạy không?",
+        clear: "xoá màn hình (hoặc Ctrl+L)",
+        keys: "↑/↓ lịch sử · Tab gợi ý lệnh",
+      },
+      undefinedHint: "thử dat:help().",
+      syntaxHint: "biểu thức kết thúc bằng dấu chấm, ví dụ dat:whoami().",
+      halt: "không dễ vậy đâu: node này có supervisor và đã được khởi động lại",
+      gotoUsage: "cách dùng: dat:goto(Section), Section là một trong",
+      hire: "{ok, \"cùng trò chuyện\"}: đang mở ứng dụng email",
+    },
     viewRepo: "Xem trên GitHub",
     doi: "DOI",
     bibtex: "BibTeX",
