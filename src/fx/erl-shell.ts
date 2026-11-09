@@ -198,13 +198,39 @@ export function mountErlShell(mount: HTMLElement): void {
   demoKick();
 
   // --- Rendering -----------------------------------------------------------
+  // Output scrolls inside the box instead of pushing the page around. The
+  // box keeps the height of the scripted transcript (static rows + prompt),
+  // re-measured on resize because that height depends on line wrapping.
+  // Shell lines carry .shell__added; clear() only hides static rows
+  // (.shell__cleared) so they can still be measured.
   let locked = false;
+  const measure = (): number => {
+    body.classList.add("is-measuring");
+    body.style.height = "";
+    const h = body.offsetHeight;
+    body.classList.remove("is-measuring");
+    return h;
+  };
+  const applyHeight = (): void => {
+    const top = body.scrollTop;
+    const atEnd = !locked || top + body.clientHeight >= body.scrollHeight - 2;
+    body.style.height = `${measure()}px`;
+    // Keep the prompt in view if it was; otherwise keep the reading position.
+    body.scrollTop = atEnd ? body.scrollHeight : top;
+  };
   const lockHeight = (): void => {
-    // Grow inside the current box instead of pushing the page around.
     if (locked) return;
+    applyHeight();
     locked = true;
-    body.style.height = `${body.offsetHeight}px`;
     body.classList.add("is-interactive");
+    let raf = 0;
+    new ResizeObserver(() => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        applyHeight();
+      });
+    }).observe(mount);
   };
 
   const renderLine = (line: Line, cls = "o"): HTMLElement => {
@@ -245,22 +271,29 @@ export function mountErlShell(mount: HTMLElement): void {
     is.className = "i";
     is.textContent = text;
     p.append(ps, " ", is);
+    p.classList.add("shell__added");
     body.insertBefore(p, promptRow);
   };
 
   const print = (res: Result): void => {
     if (res === "clear") {
-      while (body.firstChild && body.firstChild !== promptRow) body.firstChild.remove();
+      for (const el of [...body.children]) {
+        if (el === promptRow) break;
+        if (el.classList.contains("shell__added")) el.remove();
+        else el.classList.add("shell__cleared");
+      }
       return;
     }
     const frag = document.createDocumentFragment();
     res.lines.forEach((l, i) => {
       const el = renderLine(l, res.kind === "err" ? "o shell__err" : "o");
+      el.classList.add("shell__added");
       if (i < res.lines.length - 1) el.classList.add("shell__cont");
       frag.appendChild(el);
     });
     body.insertBefore(frag, promptRow);
-    while (body.children.length > MAX_LINES) body.firstElementChild?.remove();
+    const added = body.getElementsByClassName("shell__added");
+    while (added.length > MAX_LINES) added[0]?.remove();
   };
 
   const scrollDown = (): void => {
@@ -448,7 +481,8 @@ export function mountErlShell(mount: HTMLElement): void {
     const v = input.value;
     if (!v) return false;
     const hits = COMPLETIONS.filter((c) => c.startsWith(v));
-    if (hits.length === 0) return true;
+    // Nothing to complete: let Tab move focus on (no keyboard trap).
+    if (hits.length === 0) return false;
     if (hits.length === 1) {
       input.value = hits[0] ?? v;
       return true;

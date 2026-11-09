@@ -550,6 +550,16 @@ const shellJson = JSON.stringify(shellData).replace(/</g, "\\u003c");
     overscroll-behavior: contain;
     scrollbar-width: thin;
   }
+  .terminal__body :global(.shell__cleared) {
+    display: none;
+  }
+  /* height probe (erl-shell.ts measure): scripted transcript only */
+  .terminal__body:global(.is-measuring) :global(.shell__cleared) {
+    display: block;
+  }
+  .terminal__body:global(.is-measuring) :global(.shell__added) {
+    display: none;
+  }
   .terminal__body :global(.ln--input) {
     display: flex;
     align-items: baseline;
