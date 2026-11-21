@@ -71,12 +71,9 @@ export function mountCommitLog(mount: HTMLElement): void {
 
     const viewportLine = window.innerHeight * 0.45;
     let activeIdx = 0;
-    for (let i = 0; i < entries.length; i++) {
-      const rect = entries[i]!.getBoundingClientRect();
-      if (rect.top <= viewportLine) {
-        activeIdx = i;
-      }
-    }
+    entries.forEach((entry, i) => {
+      if (entry.getBoundingClientRect().top <= viewportLine) activeIdx = i;
+    });
     applyState(activeIdx, false);
   }
 

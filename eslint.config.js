@@ -11,11 +11,7 @@ const RAW_TIMER_MESSAGE =
 // noUncheckedIndexedAccess on arrays and canvas contexts; shrink per file.
 const NON_NULL_BASELINE = [
   "src/fx/beam-cluster.ts",
-  "src/fx/commit-log.ts",
   "src/fx/mailbox-fifo.ts",
-  "src/fx/send-message.ts",
-  "src/fx/supervision-tree.ts",
-  "src/fx/terminal-typing.ts",
   "src/fx/engine/*.ts",
   "tests/**/*.ts",
 ];

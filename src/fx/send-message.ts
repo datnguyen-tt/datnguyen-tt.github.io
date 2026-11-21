@@ -94,7 +94,8 @@ export function mountSendMessage(mount: HTMLElement): void {
   });
 
   function renderFrame(): void {
-    const { ctx, width, height } = managed!;
+    if (!managed) return;
+    const { ctx, width, height } = managed;
     ctx.clearRect(0, 0, width, height);
 
     const leftX = Math.max(58, width * 0.14);

@@ -38,7 +38,7 @@ export class ObjectPool<T> {
   /** Borrow an item from the pool, or return null if at `maxSize`. */
   acquire(): T | null {
     if (this.active.length >= this.maxSize) return null;
-    const item = this.free.length > 0 ? this.free.pop()! : this.factory();
+    const item = this.free.pop() ?? this.factory();
     this.reset?.(item);
     this.active.push(item);
     return item;

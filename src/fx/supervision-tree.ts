@@ -81,7 +81,8 @@ export function mountSupervisionTree(mount: HTMLElement): void {
     controllers.push(ctrl);
 
     workerItems.forEach((li, wIdx) => {
-      const wId = workerIds[wIdx]!;
+      const wId = workerIds[wIdx];
+      if (wId === undefined) return;
       const btn = li.querySelector<HTMLButtonElement>(".worker__btn") ?? li;
       btn.addEventListener("click", () => triggerCrash(ctrl, wId));
     });

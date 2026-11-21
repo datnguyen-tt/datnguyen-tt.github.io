@@ -66,8 +66,9 @@ export function mountTerminalTyping(mount: HTMLElement): void {
   const rows = Array.from(body.querySelectorAll<HTMLElement>(":scope > .ln"));
   const steps: StepItem[] = [];
   for (let i = 0; i + 1 < rows.length; i += 2) {
-    const promptRow = rows[i]!;
-    const outputRow = rows[i + 1]!;
+    const promptRow = rows[i];
+    const outputRow = rows[i + 1];
+    if (!promptRow || !outputRow) break;
     const inputSpan = promptRow.querySelector<HTMLElement>(".i");
     if (inputSpan && outputRow.classList.contains("o")) {
       steps.push({
@@ -117,13 +118,12 @@ export function mountTerminalTyping(mount: HTMLElement): void {
     stepIdx = 0;
     charIdx = 0;
     phase = "typing";
-    for (let i = 0; i < steps.length; i++) {
-      const s = steps[i]!;
+    steps.forEach((s, i) => {
       s.promptRow.style.visibility = i === 0 ? "visible" : "hidden";
       s.inputSpan.style.visibility = "visible";
       s.inputSpan.textContent = "";
       s.outputRow.style.visibility = "hidden";
-    }
+    });
     if (finalPromptRow) {
       finalPromptRow.style.visibility = "hidden";
     }
