@@ -9,8 +9,6 @@ const RAW_TIMER_MESSAGE =
 // Baseline: files that still call setTimeout directly. Remove a file from
 // this list when it moves to `createTimers()`; never add to it.
 const RAW_TIMER_BASELINE = [
-  "src/fx/beam-cluster.ts",
-  "src/fx/supervision-tree.ts",
   "src/fx/terminal-typing.ts",
   "src/fx/erl-shell.ts",
   "src/scripts/scroll-rail.ts",
@@ -90,11 +88,6 @@ export default tseslint.config(
     // Pre-paint inline script: plain ES5 on purpose, it runs before any bundle.
     files: ["**/Base.astro/**"],
     rules: { "no-var": "off", "no-empty": "off", "@typescript-eslint/no-unused-vars": "off" },
-  },
-  {
-    // Baseline: remove once the @ts-ignore lines are typed.
-    files: ["scripts/fx-smoke.mjs"],
-    rules: { "@typescript-eslint/ban-ts-comment": "off" },
   },
   {
     files: RAW_TIMER_BASELINE,

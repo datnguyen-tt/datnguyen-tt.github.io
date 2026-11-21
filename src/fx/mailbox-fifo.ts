@@ -194,7 +194,6 @@ export function mountMailboxFifo(mount: HTMLElement): void {
     }
   }
 
-  // Seed initial queue so static frame shows non-overlapping FIFO pills
   updateMeasurements(managed.width);
   for (let i = 0; i < 4; i++) {
     enqueueNext(true);
@@ -233,7 +232,6 @@ export function mountMailboxFifo(mount: HTMLElement): void {
       }
     }
 
-    // Smoothly slide queued pills toward their non-overlapping target slot
     const lerp = Math.min(1, dtMs * 0.014);
     for (let i = 0; i < activePills.length; i++) {
       const p = activePills[i]!;
@@ -260,7 +258,6 @@ export function mountMailboxFifo(mount: HTMLElement): void {
     const pillH = 26;
     const pillY = boxY + (boxH - pillH) / 2;
 
-    // 1. Caption header row: Primary plain text + muted mono secondary
     ctx.textBaseline = "middle";
     ctx.textAlign = "left";
     ctx.font = palette.sans11;
@@ -272,7 +269,6 @@ export function mountMailboxFifo(mount: HTMLElement): void {
     ctx.fillStyle = palette.textMuted;
     ctx.fillText(`· ${captionSub} (${activePills.length})`, boxX + primaryW + 8, 14);
 
-    // 2. Mailbox container
     ctx.fillStyle = palette.surface;
     ctx.strokeStyle = palette.borderStrong;
     ctx.lineWidth = 1.25;
@@ -281,7 +277,6 @@ export function mountMailboxFifo(mount: HTMLElement): void {
     ctx.fill();
     ctx.stroke();
 
-    // 3. Queued message pills (clipped strictly to mailbox interior, single non-overlapping row)
     ctx.save();
     ctx.beginPath();
     ctx.rect(boxX + 4, boxY + 2, boxW - 8, boxH - 4);
@@ -312,7 +307,6 @@ export function mountMailboxFifo(mount: HTMLElement): void {
     }
     ctx.restore();
 
-    // 4. Arrow from mailbox head to consumer node
     const arrowStartX = boxX + boxW + 6;
     const arrowEndX = receiveX - 18;
     const midY = boxY + boxH * 0.5;
@@ -325,7 +319,6 @@ export function mountMailboxFifo(mount: HTMLElement): void {
       ctx.stroke();
     }
 
-    // 5. Dequeuing pill animation
     if (receivingPill) {
       const t = receivingPill.progress;
       const drop = Math.min(1, t / 0.2, (1 - t) / 0.2);
@@ -354,7 +347,6 @@ export function mountMailboxFifo(mount: HTMLElement): void {
       ctx.globalAlpha = 1;
     }
 
-    // 6. Consumer node badge on the right
     ctx.fillStyle = palette.surface;
     ctx.strokeStyle = palette.ok;
     ctx.lineWidth = 1.6;

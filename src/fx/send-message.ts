@@ -101,7 +101,6 @@ export function mountSendMessage(mount: HTMLElement): void {
     const rightX = Math.min(width - 58, width * 0.86);
     const midY = height * 0.52;
 
-    // Channel line
     ctx.strokeStyle = phase === "ack" ? palette.ok : palette.borderStrong;
     ctx.lineWidth = 1.4;
     ctx.setLineDash(DASH);
@@ -111,7 +110,6 @@ export function mountSendMessage(mount: HTMLElement): void {
     ctx.stroke();
     ctx.setLineDash(EMPTY_DASH);
 
-    // Client endpoint
     ctx.fillStyle = palette.surface;
     ctx.strokeStyle = palette.msg;
     ctx.lineWidth = 1.5;
@@ -126,7 +124,6 @@ export function mountSendMessage(mount: HTMLElement): void {
     ctx.textBaseline = "middle";
     ctx.fillText("caller", leftX, midY);
 
-    // Receiver endpoint (dat@beam)
     ctx.fillStyle = palette.surface;
     ctx.strokeStyle = phase === "ack" ? palette.ok : palette.accentText;
     ctx.lineWidth = 1.6;
@@ -138,7 +135,6 @@ export function mountSendMessage(mount: HTMLElement): void {
     ctx.fillStyle = palette.text;
     ctx.fillText("dat@beam", rightX, midY);
 
-    // Moving packet
     if (phase === "outbound" || phase === "inbound") {
       const startX = phase === "outbound" ? leftX + 42 : rightX - 46;
       const endX = phase === "outbound" ? rightX - 46 : leftX + 42;

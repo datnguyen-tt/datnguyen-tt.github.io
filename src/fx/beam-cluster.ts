@@ -14,6 +14,7 @@
  *   `nodeup` heals with a green link pulse.
  * - Chaos monkey triggers a worker crash or `nodedown` every 6–9s when idle.
  */
+import { createTimers } from "../lib/timers";
 import { isMotionOn, isVisible, onMotionChange } from "../scripts/motion";
 import {
   buildFullMeshEdges,
@@ -169,19 +170,14 @@ export function mountBeamCluster(mount: HTMLElement): void {
   let introCrashDone = false;
   let introNodedownDone = false;
 
-  // Observer HUD counters
   let restartCount = 0;
   let netsplitCount = 0;
   let rerouteCount = 0;
   let msgRate = 142;
   let deliveredInWindow = 0;
 
-  // Timers for reduced-motion / cleanup
-  const timers: ReturnType<typeof setTimeout>[] = [];
-  function scheduleTimeout(fn: () => void, ms: number): void {
-    const id = setTimeout(fn, ms);
-    timers.push(id);
-  }
+  const timers = createTimers();
+  const scheduleTimeout = timers.after;
 
   const packetPool = new ObjectPool<MeshPacket>(
     getParticleCap(),
@@ -272,7 +268,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
 
     if (pkt.progress >= 1) {
       if (pkt.viaIdx !== null && pkt.leg === 0) {
-        // Relay hop reached: pulse a worker on the relay node and start leg 1
         const relayNode = nodes[pkt.viaIdx];
         if (relayNode && relayNode.workers.length > 0) {
           const rw =
@@ -286,7 +281,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
         return true;
       }
 
-      // Final destination reached: pulse a running worker on target node
       deliveredInWindow++;
       const runningWorkers = targetNode.workers.filter(
         (w) => w.state === "running",
@@ -373,7 +367,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
       return { cx: baseCx, cy: baseCy, rect: baseRect };
     }
 
-    // Deterministic spiral search for nearest free perimeter slot
     const dySteps = [0, -18, 18, -36, 36, -56, 56, -78, 78];
     const dxSteps = [0, -32, 32, -68, 68, -110, 110, -160, 160];
     for (const dy of dySteps) {
@@ -553,10 +546,8 @@ export function mountBeamCluster(mount: HTMLElement): void {
       });
     }
 
-    // Build full-mesh undirected edges: n*(n-1)/2
     edges = buildFullMeshEdges(nodes.length);
 
-    // Seed initial protocol packets across the mesh so static/initial frame is rich
     const seedCount = isBandMode ? 6 : 12;
     for (let i = 0; i < seedCount; i++) {
       const e = edges[i % edges.length];
@@ -761,7 +752,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
       return;
     }
 
-    // Standard worker crash: hold red ~900ms with EXIT
     for (const w of node.workers) {
       if (report.restartSet.includes(w.id)) {
         w.state = "crashed";
@@ -810,7 +800,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
     netsplitCount++;
     mount.dataset["lastNodedown"] = node.spec.id;
 
-    // Mark all in-flight packets heading toward `nodeIdx` as dropping
     for (const pkt of packetPool.items) {
       const target =
         pkt.viaIdx !== null && pkt.leg === 0 ? pkt.viaIdx : pkt.toIdx;
@@ -820,7 +809,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
       }
     }
 
-    // Immediately dispatch rerouted failover packets through a healthy relay node
     const states = nodes.map((n) => n.lifecycle);
     const otherHealthy: number[] = [];
     for (let i = 0; i < nodes.length; i++) {
@@ -876,7 +864,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
     node.statusUntilMs = nowMs + 950;
     mount.dataset["lastNodeup"] = node.spec.id;
 
-    // Pulse all links incident to healed node green
     for (const e of edges) {
       if (e.a === nodeIdx || e.b === nodeIdx) {
         e.pulseUntilMs = nowMs + 950;
@@ -1006,7 +993,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
       }
     }
 
-    // Spawn protocol packets across the mesh
     spawnAccumMs += dtMs;
     const spawnInterval = isBandMode ? 190 : 105;
     while (spawnAccumMs >= spawnInterval) {
@@ -1023,7 +1009,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
     trimPacketLabelsToMax(2);
     updatePointerNode(dtMs, nowMs);
 
-    // Update HUD msgs/s counter every 900ms
     hudAccumMs += dtMs;
     if (hudAccumMs >= 900) {
       const instantRate = Math.round((deliveredInWindow * 1000) / hudAccumMs);
@@ -1065,7 +1050,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
 
     const copyRect = !isBandMode && exclusionRects[0] ? exclusionRects[0] : null;
 
-    // 1. Draw full-mesh links (soft alpha behind copy <= 0.16, clearer in open space & behind glass terminal)
     drawMeshLinks(ctx, nowMs, false);
 
     // If desktop, attenuate any link segment directly behind `.hero__copy` so copy readability is 100% preserved
@@ -1089,13 +1073,10 @@ export function mountBeamCluster(mount: HTMLElement): void {
       ctx.restore();
     }
 
-    // 2. Draw protocol packets along links (with soft glow & occasional protocol tags)
     drawPackets(ctx, copyRect);
 
-    // 3. Draw BEAM VM node cards (strictly outside `.hero__copy` and `.terminal`)
     drawNodeCards(ctx, nowMs);
 
-    // 4. Visitor pointer as a client node (above cards, below nothing)
     drawPointerNode(ctx, nowMs);
 
     ctx.globalAlpha = 1;
@@ -1129,7 +1110,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
     ptr.sx += (ptr.x - ptr.sx) * k;
     ptr.sy += (ptr.y - ptr.sy) * k;
 
-    // Nearest live nodes within range
     const ranked: { idx: number; d: number }[] = [];
     for (let i = 0; i < nodes.length; i++) {
       const n = nodes[i]!;
@@ -1192,7 +1172,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
       }
     }
 
-    // Client node: dot + ring
     const fade = fading ? 1 - since / 900 : 1;
     const joining = ptr.state === "up" && since < 600;
     ctx.globalAlpha = 0.9 * fade;
@@ -1347,7 +1326,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
       ctx.lineTo(x, y);
       ctx.stroke();
 
-      // Soft outer halo + crisp core dot
       ctx.fillStyle = color;
       ctx.globalAlpha = alpha * 0.28;
       ctx.beginPath();
@@ -1378,7 +1356,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
       const isHoveredNode =
         hoveredHit?.nodeIdx === i && hoveredHit.kind === "node";
 
-      // Card surface & border
       ctx.globalAlpha = n.lifecycle === "down" ? 0.88 : 0.97;
       ctx.fillStyle = palette.surface;
       let borderCol = palette.borderStrong;
@@ -1415,7 +1392,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
       ctx.stroke();
       ctx.setLineDash(NO_DASH);
 
-      // Subtle header divider line inside the VM card
       const headerH = isBandMode ? 19 : 22;
       ctx.strokeStyle = palette.border;
       ctx.lineWidth = 0.8;
@@ -1424,7 +1400,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
       ctx.lineTo(left + n.w - 6, top + headerH);
       ctx.stroke();
 
-      // Status LED (green up / red down / amber restarting)
       const ledX = left + 10;
       const ledY = top + headerH * 0.52;
       const ledColor =
@@ -1445,7 +1420,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
       ctx.arc(ledX, ledY, 2.7, 0, Math.PI * 2);
       ctx.fill();
 
-      // Node name (`sbg1@sig-01`, etc.)
       ctx.font = isBandMode ? palette.mono10Bold : palette.mono11Bold;
       ctx.fillStyle =
         n.lifecycle === "down" ? palette.accentText : palette.text;
@@ -1453,7 +1427,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
       ctx.textBaseline = "middle";
       ctx.fillText(n.spec.shortName, left + 18, ledY);
 
-      // Role subtitle or transient status badge (`nodedown`, `EXIT`, `nodeup`)
       if (!isBandMode) {
         ctx.font = palette.mono9;
         ctx.fillStyle = n.statusText
@@ -1470,7 +1443,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
         );
       }
 
-      // Mini supervision tree inside the card: 1 supervisor square + 3–4 worker dots
       const supX = n.cx + n.supRelX;
       const supY = n.cy + n.supRelY + (isBandMode ? 2 : 5);
 
@@ -1479,7 +1451,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
         const wx = n.cx + w.relX;
         const wy = n.cy + w.relY + (isBandMode ? 2 : 5);
 
-        // Tiny internal link from supervisor square to worker dot
         ctx.strokeStyle =
           w.state === "crashed"
             ? palette.accentText

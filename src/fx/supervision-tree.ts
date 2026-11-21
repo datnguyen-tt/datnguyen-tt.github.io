@@ -7,6 +7,7 @@
  *   start order (`i * 120ms`) so strategies are visibly distinct (Architect #3).
  * - Handles supervisor escalation when max restart intensity is exceeded (M5).
  */
+import { createTimers, type Timers } from "../lib/timers";
 import { Supervisor, type Strategy } from "./engine/supervisor";
 
 type GlobalStrategyMode = "as_designed" | Strategy;
@@ -17,7 +18,7 @@ interface GroupController {
   designedStrategy: Strategy;
   sup: Supervisor;
   workerMap: Map<string, HTMLElement>;
-  timers: ReturnType<typeof setTimeout>[];
+  timers: Timers;
 }
 
 export function mountSupervisionTree(mount: HTMLElement): void {
@@ -39,10 +40,7 @@ export function mountSupervisionTree(mount: HTMLElement): void {
   let globalMode: GlobalStrategyMode = "as_designed";
 
   function clearGroupTimers(ctrl: GroupController): void {
-    while (ctrl.timers.length > 0) {
-      const t = ctrl.timers.pop();
-      if (t !== undefined) clearTimeout(t);
-    }
+    ctrl.timers.clear();
   }
 
   groups.forEach((groupEl, gIdx) => {
@@ -78,7 +76,7 @@ export function mountSupervisionTree(mount: HTMLElement): void {
       designedStrategy,
       sup,
       workerMap,
-      timers: [],
+      timers: createTimers(),
     };
     controllers.push(ctrl);
 
@@ -129,7 +127,7 @@ export function mountSupervisionTree(mount: HTMLElement): void {
         el.classList.remove("is-restarted");
         el.classList.add("is-crashed");
       }
-      const escTimer = setTimeout(() => {
+      ctrl.timers.after(() => {
         ctrl.sup.reset(performance.now());
         mount.dataset["escalatedState"] = "false";
         for (const [, el] of ctrl.workerMap) {
@@ -138,14 +136,12 @@ export function mountSupervisionTree(mount: HTMLElement): void {
         }
         if (primaryOut) primaryOut.textContent = defaultPrimaryText;
         if (subOut) subOut.textContent = defaultSubText;
-        const cleanTimer = setTimeout(() => {
+        ctrl.timers.after(() => {
           for (const [, el] of ctrl.workerMap) {
             el.classList.remove("is-restarted");
           }
         }, 700);
-        ctrl.timers.push(cleanTimer);
       }, 1200);
-      ctrl.timers.push(escTimer);
       return;
     }
 
@@ -167,23 +163,20 @@ export function mountSupervisionTree(mount: HTMLElement): void {
     }
     mount.dataset["lastSupervisorReport"] = wId;
 
-    const baseHoldTimer = setTimeout(() => {
+    ctrl.timers.after(() => {
       ctrl.sup.tick(performance.now());
       report.restartSet.forEach((id, i) => {
-        const staggerTimer = setTimeout(() => {
+        ctrl.timers.after(() => {
           const el = ctrl.workerMap.get(id);
           if (!el) return;
           el.classList.remove("is-crashed");
           el.classList.add("is-restarted");
-          const clearTimer = setTimeout(() => {
+          ctrl.timers.after(() => {
             el.classList.remove("is-restarted");
           }, 680);
-          ctrl.timers.push(clearTimer);
-        }, i * 120);
-        ctrl.timers.push(staggerTimer);
+          }, i * 120);
       });
     }, 900);
-    ctrl.timers.push(baseHoldTimer);
   }
 
   mount.dataset["fxReady"] = "true";

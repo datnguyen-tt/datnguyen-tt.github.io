@@ -20,7 +20,6 @@ describe("Supervisor (strategies & intensity escalation)", () => {
     expect(sup.getChild("w2")?.state).toBe("crashed");
     expect(sup.getChild("w3")?.state).toBe("running");
 
-    // Advance past restartDelayMs
     const restarted = sup.tick(1500);
     expect(restarted).toEqual(["w2"]);
     expect(sup.getChild("w2")?.state).toBe("running");

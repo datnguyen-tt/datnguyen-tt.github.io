@@ -140,7 +140,6 @@ try {
     // Inject axe-core and assert 0 violations in dark mode
     await page.addScriptTag({ path: axePath });
     const axeResult = await page.evaluate(async () => {
-      // @ts-ignore
       const res = await window.axe.run(document);
       return res.violations.map((v) => ({
         id: v.id,
@@ -178,7 +177,6 @@ try {
   await page.waitForTimeout(150);
   await page.addScriptTag({ path: axePath });
   const lightAxeResult = await page.evaluate(async () => {
-    // @ts-ignore
     const res = await window.axe.run(document);
     return res.violations.map((v) => ({
       id: v.id,
@@ -256,7 +254,6 @@ try {
 
   await page.evaluate(() => {
     const m = document.querySelector('[data-effect="beam-cluster"]');
-    // @ts-ignore
     m?.__triggerNodeDown?.(1);
   });
   await page.waitForTimeout(350);
@@ -266,7 +263,6 @@ try {
 
   const midDownState = await page.evaluate(() => {
     const m = document.querySelector('[data-effect="beam-cluster"]');
-    // @ts-ignore
     const info = m?.__getBeamGeometry?.();
     return {
       lastNodedown: m?.getAttribute("data-last-nodedown"),
@@ -290,7 +286,6 @@ try {
   await page.waitForTimeout(2000);
   const healedState = await page.evaluate(() => {
     const m = document.querySelector('[data-effect="beam-cluster"]');
-    // @ts-ignore
     const info = m?.__getBeamGeometry?.();
     const logs = Array.from(
       document.querySelectorAll("[data-terminal-live] [data-log-line]"),
@@ -410,7 +405,6 @@ try {
       const cRect = copyEl.getBoundingClientRect();
       const ctaRect = ctaEl.getBoundingClientRect();
       const tRect = termEl.getBoundingClientRect();
-      // @ts-ignore
       const info = mount.__getBeamGeometry ? mount.__getBeamGeometry() : null;
 
       function overlaps(a, b) {
@@ -513,7 +507,6 @@ try {
     // and keep the first mobile screenshot showing the initial placeholder or post-crash cleanly
     await page.evaluate(() => {
       const m = document.querySelector('[data-effect="beam-cluster"]');
-      // @ts-ignore
       m?.__triggerWorkerCrash?.(0, 0);
     });
     await page.waitForTimeout(980);
@@ -555,7 +548,6 @@ try {
     await page.waitForTimeout(200);
     const pillOverlap = await page.evaluate(() => {
       const m = document.querySelector('[data-effect="mailbox-fifo"]');
-      // @ts-ignore
       const pills = m?.__getMailboxPills ? m.__getMailboxPills() : [];
       for (let i = 0; i < pills.length - 1; i++) {
         if (pills[i].x + pills[i].width > pills[i + 1].x + 0.5) {
@@ -619,13 +611,10 @@ try {
     await cdp.send("Emulation.setCPUThrottlingRate", { rate: 4 });
 
     await clsPage.addInitScript(() => {
-      // @ts-ignore
       window.__clsValue = 0;
       const po = new PerformanceObserver((list) => {
         for (const entry of list.getEntries()) {
-          // @ts-ignore
           if (!entry.hadRecentInput) {
-            // @ts-ignore
             window.__clsValue += entry.value;
           }
         }
@@ -636,7 +625,6 @@ try {
     await clsPage.goto(`${BASE}${route}`, { waitUntil: "networkidle" });
     await clsPage.waitForTimeout(800);
     const clsVal = await clsPage.evaluate(() => {
-      // @ts-ignore
       return Number((window.__clsValue || 0).toFixed(4));
     });
     report.coldCls[route] = clsVal;
