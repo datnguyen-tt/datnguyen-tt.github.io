@@ -28,11 +28,20 @@ import {
   type BoxRect,
   type MeshEdge,
   type NodeLifecycle,
-  type ProtocolId,
 } from "./engine/mesh-router";
 import { ObjectPool } from "./engine/pool";
 import { scheduler } from "./engine/scheduler";
 import { Supervisor } from "./engine/supervisor";
+import {
+  drawScene,
+  PTR_MAX_LINK,
+  type HitTarget,
+  type MeshNodeCard,
+  type MeshPacket,
+  type PointerState,
+  type Scene,
+  type WorkerSlot,
+} from "./beam-draw";
 import { appendTerminalLog } from "./terminal-typing";
 import {
   getPalette,
@@ -41,60 +50,6 @@ import {
   setupCanvas,
   type ThemePalette,
 } from "./theme";
-
-interface WorkerSlot {
-  id: string;
-  relX: number;
-  relY: number;
-  state: "running" | "crashed";
-  pulseUntilMs: number;
-  statusUntilMs: number;
-  flash: "red" | "green" | null;
-  pid: number;
-}
-
-interface MeshNodeCard {
-  idx: number;
-  spec: BeamNodeSpec;
-  cx: number;
-  cy: number;
-  w: number;
-  h: number;
-  rect: BoxRect;
-  supRelX: number;
-  supRelY: number;
-  workers: WorkerSlot[];
-  sup: Supervisor;
-  lifecycle: NodeLifecycle;
-  downUntilMs: number;
-  healUntilMs: number;
-  statusText: string;
-  statusUntilMs: number;
-}
-
-interface MeshPacket {
-  fromIdx: number;
-  toIdx: number;
-  viaIdx: number | null;
-  leg: 0 | 1;
-  progress: number;
-  speed: number;
-  protocol: ProtocolId;
-  label: string;
-  showLabel: boolean;
-  rerouted: boolean;
-  dropping: boolean;
-  dropAlpha: number;
-}
-
-type HitTarget =
-  | { kind: "worker"; nodeIdx: number; workerIdx: number }
-  | { kind: "node"; nodeIdx: number }
-  | null;
-
-const DASH_DOWN: number[] = [5, 5];
-const DASH_REROUTE: number[] = [3, 3];
-const NO_DASH: number[] = [];
 
 export function mountBeamCluster(mount: HTMLElement): void {
   if (mount.dataset["fxReady"] === "true") return;
@@ -142,21 +97,20 @@ export function mountBeamCluster(mount: HTMLElement): void {
   // The visitor's mouse pointer joins the mesh as a 7th "client" node:
   // it links to the nearest nodes, exchanges packets, and goes `nodedown`
   // when it idles or leaves the hero. Fine pointers + motion-on only.
-  const PTR_MAX_LINK = 340;
   const PTR_MAX_LINKS = 3;
   const PTR_IDLE_MS = 2600;
   const finePointer = window.matchMedia("(pointer: fine)");
-  const ptr = {
+  const ptr: PointerState = {
     x: 0,
     y: 0,
     sx: 0,
     sy: 0,
-    state: "down" as "up" | "down",
+    state: "down",
     changedMs: -1e9,
     lastMoveMs: 0,
     nextPktMs: 0,
-    links: [] as number[],
-    packets: [] as { idx: number; t: number; out: boolean }[],
+    links: [],
+    packets: [],
   };
 
   let simNow = performance.now();
@@ -208,20 +162,17 @@ export function mountBeamCluster(mount: HTMLElement): void {
     true,
   );
 
-  function protocolColor(proto: ProtocolId): string {
-    switch (proto) {
-      case "SIP":
-        return palette.protoSip;
-      case "Diameter":
-        return palette.protoDiameter;
-      case "NETCONF":
-        return palette.protoNetconf;
-      case "MQTT":
-        return palette.protoMqtt;
-      case "Erlang":
-        return palette.protoErlang;
-    }
-  }
+  // Painter inputs (see beam-draw.ts); palette, edges, hover and mode are
+  // refreshed in renderFrame.
+  const scene: Scene = {
+    palette,
+    nodes,
+    edges,
+    packets: packetPool.items,
+    hoveredHit,
+    isBandMode,
+    ptr,
+  };
 
   function announcePolite(text: string, force = false): void {
     if (!liveOut) return;
@@ -1050,36 +1001,11 @@ export function mountBeamCluster(mount: HTMLElement): void {
 
     const copyRect = !isBandMode && exclusionRects[0] ? exclusionRects[0] : null;
 
-    drawMeshLinks(ctx, nowMs, false);
-
-    // If desktop, attenuate any link segment directly behind `.hero__copy` so copy readability is 100% preserved
-    if (copyRect) {
-      ctx.save();
-      ctx.beginPath();
-      ctx.rect(
-        copyRect.left - 8,
-        copyRect.top - 8,
-        copyRect.right - copyRect.left + 16,
-        copyRect.bottom - copyRect.top + 16,
-      );
-      ctx.clip();
-      ctx.clearRect(
-        copyRect.left - 8,
-        copyRect.top - 8,
-        copyRect.right - copyRect.left + 16,
-        copyRect.bottom - copyRect.top + 16,
-      );
-      drawMeshLinks(ctx, nowMs, true);
-      ctx.restore();
-    }
-
-    drawPackets(ctx, copyRect);
-
-    drawNodeCards(ctx, nowMs);
-
-    drawPointerNode(ctx, nowMs);
-
-    ctx.globalAlpha = 1;
+    scene.palette = palette;
+    scene.edges = edges;
+    scene.hoveredHit = hoveredHit;
+    scene.isBandMode = isBandMode;
+    drawScene(scene, ctx, nowMs, copyRect);
   }
 
   function setPointerState(next: "up" | "down", nowMs: number): void {
@@ -1135,70 +1061,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
     }
   }
 
-  function drawPointerNode(ctx: CanvasRenderingContext2D, nowMs: number): void {
-    const since = nowMs - ptr.changedMs;
-    const fading = ptr.state === "down" && since < 900;
-    if (ptr.state === "down" && !fading) return;
-
-    ctx.save();
-    if (ptr.state === "up") {
-      for (const idx of ptr.links) {
-        const n = nodes[idx]!;
-        const d = Math.hypot(n.cx - ptr.sx, n.cy - ptr.sy);
-        ctx.globalAlpha = Math.max(0.12, 1 - d / PTR_MAX_LINK) * 0.7;
-        ctx.strokeStyle = palette.msg;
-        ctx.lineWidth = 1;
-        ctx.setLineDash(DASH_REROUTE);
-        ctx.beginPath();
-        ctx.moveTo(ptr.sx, ptr.sy);
-        ctx.lineTo(n.cx, n.cy);
-        ctx.stroke();
-      }
-      ctx.setLineDash(NO_DASH);
-      for (const p of ptr.packets) {
-        const n = nodes[p.idx]!;
-        const f = p.out ? p.t : 1 - p.t;
-        ctx.globalAlpha = 0.95;
-        ctx.fillStyle = palette.protoErlang;
-        ctx.beginPath();
-        ctx.arc(
-          ptr.sx + (n.cx - ptr.sx) * f,
-          ptr.sy + (n.cy - ptr.sy) * f,
-          2.6,
-          0,
-          Math.PI * 2,
-        );
-        ctx.fill();
-      }
-    }
-
-    const fade = fading ? 1 - since / 900 : 1;
-    const joining = ptr.state === "up" && since < 600;
-    ctx.globalAlpha = 0.9 * fade;
-    ctx.fillStyle = fading ? palette.accentText : palette.msg;
-    ctx.beginPath();
-    ctx.arc(ptr.sx, ptr.sy, 3.5, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.globalAlpha = (joining ? 0.9 - since / 700 : 0.5) * fade;
-    ctx.strokeStyle = fading ? palette.accentText : joining ? palette.ok : palette.msg;
-    ctx.lineWidth = 1.25;
-    ctx.beginPath();
-    ctx.arc(ptr.sx, ptr.sy, joining ? 8 + since / 40 : fading ? 8 + since / 60 : 8, 0, Math.PI * 2);
-    ctx.stroke();
-
-    // Label: hover hint > nodeup/nodedown > id
-    let label = "client@you";
-    if (fading) label = "nodedown";
-    else if (joining) label = "nodeup";
-    else if (hoveredHit?.kind === "worker") label = "click → exit(Pid, kill)";
-    else if (hoveredHit?.kind === "node") label = "click → nodedown";
-    ctx.font = palette.mono9;
-    ctx.globalAlpha = (hoveredHit && !fading ? 0.95 : 0.7) * fade;
-    ctx.fillStyle = fading ? palette.accentText : joining ? palette.ok : palette.textMuted;
-    ctx.fillText(label, ptr.sx + 12, ptr.sy - 10);
-    ctx.restore();
-  }
-
   function onHeroPointerMove(e: PointerEvent): void {
     if (e.pointerType !== "mouse" || !finePointer.matches || !isMotionOn()) return;
     const cr = managed!.canvas.getBoundingClientRect();
@@ -1220,298 +1082,6 @@ export function mountBeamCluster(mount: HTMLElement): void {
   document.documentElement.addEventListener("pointerleave", () =>
     setPointerState("down", performance.now()),
   );
-
-  function drawMeshLinks(
-    ctx: CanvasRenderingContext2D,
-    nowMs: number,
-    behindCopy: boolean,
-  ): void {
-    const baseAlpha = behindCopy
-      ? 0.12
-      : palette.isLight
-        ? 0.28
-        : 0.44;
-
-    for (let i = 0; i < edges.length; i++) {
-      const e = edges[i]!;
-      const na = nodes[e.a];
-      const nb = nodes[e.b];
-      if (!na || !nb) continue;
-
-      const isDownEdge =
-        na.lifecycle === "down" || nb.lifecycle === "down";
-      const isHealing = e.pulseUntilMs > nowMs;
-      const isReroute = !isDownEdge && e.rerouteUntilMs > nowMs;
-
-      if (isDownEdge) {
-        ctx.strokeStyle = palette.accentText;
-        ctx.lineWidth = 1.4;
-        ctx.globalAlpha = behindCopy ? 0.12 : 0.78;
-        ctx.setLineDash(DASH_DOWN);
-      } else if (isHealing) {
-        ctx.strokeStyle = palette.ok;
-        ctx.lineWidth = 1.75;
-        ctx.globalAlpha = behindCopy ? 0.12 : 0.88;
-        ctx.setLineDash(NO_DASH);
-      } else if (isReroute) {
-        ctx.strokeStyle = palette.warn;
-        ctx.lineWidth = 1.5;
-        ctx.globalAlpha = behindCopy ? 0.12 : 0.82;
-        ctx.setLineDash(DASH_REROUTE);
-      } else {
-        ctx.strokeStyle = palette.borderStrong;
-        ctx.lineWidth = 1.05;
-        ctx.globalAlpha = baseAlpha;
-        ctx.setLineDash(NO_DASH);
-      }
-
-      ctx.beginPath();
-      ctx.moveTo(na.cx, na.cy);
-      ctx.lineTo(nb.cx, nb.cy);
-      ctx.stroke();
-    }
-    ctx.setLineDash(NO_DASH);
-  }
-
-  function drawPackets(
-    ctx: CanvasRenderingContext2D,
-    copyRect: BoxRect | null,
-  ): void {
-    const active = packetPool.items;
-    ctx.font = palette.mono9;
-    ctx.textAlign = "center";
-    ctx.textBaseline = "bottom";
-
-    for (let i = 0; i < active.length; i++) {
-      const pkt = active[i]!;
-      const startIdx =
-        pkt.viaIdx !== null && pkt.leg === 1 ? pkt.viaIdx : pkt.fromIdx;
-      const endIdx =
-        pkt.viaIdx !== null && pkt.leg === 0 ? pkt.viaIdx : pkt.toIdx;
-      const a = nodes[startIdx];
-      const b = nodes[endIdx];
-      if (!a || !b) continue;
-
-      const x = a.cx + (b.cx - a.cx) * pkt.progress;
-      const y = a.cy + (b.cy - a.cy) * pkt.progress;
-
-      const inCopy =
-        copyRect !== null &&
-        x >= copyRect.left &&
-        x <= copyRect.right &&
-        y >= copyRect.top &&
-        y <= copyRect.bottom;
-
-      const color = pkt.dropping
-        ? palette.accentText
-        : pkt.rerouted
-          ? palette.warn
-          : protocolColor(pkt.protocol);
-
-      const alpha = inCopy
-        ? 0.16
-        : pkt.dropping
-          ? pkt.dropAlpha
-          : 0.92;
-
-      const tailT = Math.max(0, pkt.progress - 0.08);
-      const tx = a.cx + (b.cx - a.cx) * tailT;
-      const ty = a.cy + (b.cy - a.cy) * tailT;
-
-      ctx.globalAlpha = alpha;
-      ctx.strokeStyle = color;
-      ctx.lineWidth = pkt.rerouted ? 2.1 : 1.7;
-      ctx.beginPath();
-      ctx.moveTo(tx, ty);
-      ctx.lineTo(x, y);
-      ctx.stroke();
-
-      ctx.fillStyle = color;
-      ctx.globalAlpha = alpha * 0.28;
-      ctx.beginPath();
-      ctx.arc(x, y, pkt.rerouted ? 6 : 5, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.globalAlpha = alpha;
-      ctx.beginPath();
-      ctx.arc(x, y, pkt.rerouted ? 3 : 2.5, 0, Math.PI * 2);
-      ctx.fill();
-
-      if (pkt.showLabel && !inCopy && !isBandMode) {
-        ctx.fillStyle = color;
-        ctx.globalAlpha = alpha * 0.92;
-        ctx.fillText(
-          pkt.rerouted ? `↻ ${pkt.label}` : pkt.label,
-          x,
-          y - 6,
-        );
-      }
-    }
-  }
-
-  function drawNodeCards(ctx: CanvasRenderingContext2D, nowMs: number): void {
-    for (let i = 0; i < nodes.length; i++) {
-      const n = nodes[i]!;
-      const { left, top } = n.rect;
-      const isHoveredNode =
-        hoveredHit?.nodeIdx === i && hoveredHit.kind === "node";
-
-      ctx.globalAlpha = n.lifecycle === "down" ? 0.88 : 0.97;
-      ctx.fillStyle = palette.surface;
-      let borderCol = palette.borderStrong;
-      if (n.lifecycle === "down") {
-        borderCol = palette.accentText;
-      } else if (n.healUntilMs > nowMs) {
-        borderCol = palette.ok;
-      } else if (n.lifecycle === "restarting") {
-        borderCol = palette.warn;
-      } else if (isHoveredNode) {
-        borderCol = palette.msg;
-      }
-
-      ctx.strokeStyle = borderCol;
-      ctx.lineWidth =
-        n.lifecycle === "down" || n.healUntilMs > nowMs || isHoveredNode
-          ? 1.75
-          : palette.isLight
-            ? 1.45
-            : 1.15;
-      if (
-        palette.isLight &&
-        n.lifecycle === "up" &&
-        n.healUntilMs <= nowMs &&
-        !isHoveredNode
-      ) {
-        ctx.strokeStyle = palette.textMuted;
-      }
-      if (n.lifecycle === "down") ctx.setLineDash(DASH_DOWN);
-
-      ctx.beginPath();
-      ctx.roundRect(left, top, n.w, n.h, 7);
-      ctx.fill();
-      ctx.stroke();
-      ctx.setLineDash(NO_DASH);
-
-      const headerH = isBandMode ? 19 : 22;
-      ctx.strokeStyle = palette.border;
-      ctx.lineWidth = 0.8;
-      ctx.beginPath();
-      ctx.moveTo(left + 6, top + headerH);
-      ctx.lineTo(left + n.w - 6, top + headerH);
-      ctx.stroke();
-
-      const ledX = left + 10;
-      const ledY = top + headerH * 0.52;
-      const ledColor =
-        n.lifecycle === "down"
-          ? palette.accentText
-          : n.lifecycle === "restarting"
-            ? palette.warn
-            : palette.ok;
-
-      ctx.fillStyle = ledColor;
-      ctx.globalAlpha = 0.26;
-      ctx.beginPath();
-      ctx.arc(ledX, ledY, 5.2, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.globalAlpha = 1;
-      ctx.beginPath();
-      ctx.arc(ledX, ledY, 2.7, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.font = isBandMode ? palette.mono10Bold : palette.mono11Bold;
-      ctx.fillStyle =
-        n.lifecycle === "down" ? palette.accentText : palette.text;
-      ctx.textAlign = "left";
-      ctx.textBaseline = "middle";
-      ctx.fillText(n.spec.shortName, left + 18, ledY);
-
-      if (!isBandMode) {
-        ctx.font = palette.mono9;
-        ctx.fillStyle = n.statusText
-          ? n.lifecycle === "down"
-            ? palette.accentText
-            : n.healUntilMs > nowMs
-              ? palette.ok
-              : palette.warn
-          : palette.textMuted;
-        ctx.fillText(
-          n.statusText || n.spec.role,
-          left + 8,
-          top + headerH + 9,
-        );
-      }
-
-      const supX = n.cx + n.supRelX;
-      const supY = n.cy + n.supRelY + (isBandMode ? 2 : 5);
-
-      for (let wIdx = 0; wIdx < n.workers.length; wIdx++) {
-        const w = n.workers[wIdx]!;
-        const wx = n.cx + w.relX;
-        const wy = n.cy + w.relY + (isBandMode ? 2 : 5);
-
-        ctx.strokeStyle =
-          w.state === "crashed"
-            ? palette.accentText
-            : w.flash === "green"
-              ? palette.ok
-              : palette.borderStrong;
-        ctx.lineWidth = 0.95;
-        ctx.globalAlpha = n.lifecycle === "down" ? 0.35 : 0.78;
-        ctx.beginPath();
-        ctx.moveTo(supX + 4, supY);
-        ctx.lineTo(wx, wy);
-        ctx.stroke();
-
-        // Worker dot + message handling / restart ring
-        const isHoveredWorker =
-          hoveredHit?.kind === "worker" &&
-          hoveredHit.nodeIdx === i &&
-          hoveredHit.workerIdx === wIdx;
-        const isPulsing = w.pulseUntilMs > nowMs;
-
-        let wColor = protocolColor(n.spec.protocol);
-        if (n.lifecycle === "down" || w.state === "crashed" || w.flash === "red") {
-          wColor = palette.accentText;
-        } else if (w.flash === "green") {
-          wColor = palette.ok;
-        }
-
-        if (isPulsing || w.flash !== null || isHoveredWorker) {
-          ctx.strokeStyle =
-            w.state === "crashed"
-              ? palette.accentText
-              : w.flash === "green"
-                ? palette.ok
-                : wColor;
-          ctx.lineWidth = 1.4;
-          ctx.globalAlpha = 0.85;
-          ctx.beginPath();
-          ctx.arc(wx, wy, 6.2, 0, Math.PI * 2);
-          ctx.stroke();
-        }
-
-        ctx.globalAlpha = n.lifecycle === "down" ? 0.45 : 0.96;
-        ctx.fillStyle =
-          w.state === "crashed" ? palette.accent : wColor;
-        ctx.beginPath();
-        ctx.arc(wx, wy, 3.4, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
-      // Mini supervisor square inside card
-      ctx.globalAlpha = n.lifecycle === "down" ? 0.5 : 0.98;
-      ctx.fillStyle = palette.surface2;
-      ctx.strokeStyle =
-        n.lifecycle === "down" ? palette.accentText : palette.accent;
-      ctx.lineWidth = 1.5;
-      ctx.beginPath();
-      ctx.rect(supX - 4.2, supY - 4.2, 8.4, 8.4);
-      ctx.fill();
-      ctx.stroke();
-    }
-  }
 
   function hitTest(clientX: number, clientY: number): HitTarget {
     const rect = managed!.canvas.getBoundingClientRect();
