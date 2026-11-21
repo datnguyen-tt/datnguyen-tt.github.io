@@ -48,8 +48,9 @@ export class ObjectPool<T> {
   releaseAt(index: number): void {
     const len = this.active.length;
     if (index < 0 || index >= len) return;
-    const item = this.active[index]!;
-    const last = this.active.pop()!;
+    const item = this.active[index];
+    const last = this.active.pop();
+    if (item === undefined || last === undefined) return;
     if (index < len - 1) {
       this.active[index] = last;
     }
@@ -66,8 +67,8 @@ export class ObjectPool<T> {
 
   /** Release all active items back to the free list. */
   releaseAll(): void {
-    while (this.active.length > 0) {
-      this.free.push(this.active.pop()!);
+    for (let item = this.active.pop(); item !== undefined; item = this.active.pop()) {
+      this.free.push(item);
     }
   }
 
@@ -83,7 +84,8 @@ export class ObjectPool<T> {
   sweep(keepFn: (item: T) => boolean): void {
     let i = 0;
     while (i < this.active.length) {
-      const item = this.active[i]!;
+      const item = this.active[i];
+      if (item === undefined) break;
       if (keepFn(item)) {
         i++;
       } else {

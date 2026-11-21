@@ -161,11 +161,7 @@ export function findMeshEdgeIndex(
 ): number {
   const lo = Math.min(u, v);
   const hi = Math.max(u, v);
-  for (let i = 0; i < edges.length; i++) {
-    const e = edges[i]!;
-    if (e.a === lo && e.b === hi) return i;
-  }
-  return -1;
+  return edges.findIndex((e) => e.a === lo && e.b === hi);
 }
 
 /** Pick a healthy relay node distinct from `fromIdx`, `toIdx`, and `downIdx`. */

@@ -111,7 +111,7 @@ export class Supervisor {
     if (idx === -1) return [];
     switch (this.strategyVal) {
       case "one_for_one":
-        return [this.children[idx]!.id];
+        return [crashedId];
       case "one_for_all":
         return this.children.map((c) => c.id);
       case "rest_for_one":

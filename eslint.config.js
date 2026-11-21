@@ -13,7 +13,7 @@ const NON_NULL_BASELINE = [
   "src/fx/beam-cluster.ts",
   "src/fx/beam-draw.ts",
   "src/fx/mailbox-fifo.ts",
-  "src/fx/engine/*.ts",
+  "src/fx/engine/mailbox.ts",
   "tests/**/*.ts",
 ];
 
