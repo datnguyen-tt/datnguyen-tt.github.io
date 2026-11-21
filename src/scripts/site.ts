@@ -1,5 +1,6 @@
 /* Tiny progressive enhancement: toggles, menu, active nav, hash-preserving
    lang switch, BibTeX copy. No dependencies. */
+import { createTimers } from "../lib/timers";
 import { isMotionOn, isVisible, setMotion } from "./motion";
 
 const root = document.documentElement;
@@ -141,6 +142,7 @@ if ("IntersectionObserver" in window && links.size) {
 }
 
 // --- Copy BibTeX -----------------------------------------------------
+const copyReset = createTimers();
 document
   .querySelectorAll<HTMLButtonElement>("[data-copy-target]")
   .forEach((btn) => {
@@ -157,6 +159,6 @@ document
         src.closest("details")?.setAttribute("open", "");
         return;
       }
-      setTimeout(() => (label.textContent = idle), 2000);
+      copyReset.after(() => (label.textContent = idle), 2000);
     });
   });

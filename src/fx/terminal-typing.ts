@@ -6,6 +6,7 @@
  *   live OTP SASL / net_kernel events (`=ERROR REPORT====`, `=PROGRESS REPORT==`,
  *   `nodedown`, `nodeup`) into `[data-terminal-live]` (max 6 visible lines).
  */
+import { createTimer, createTimers } from "../lib/timers";
 import { isMotionOn, isVisible, onMotionChange } from "../scripts/motion";
 
 export type TerminalLogKind = "err" | "ok" | "warn" | "muted";
@@ -80,7 +81,8 @@ export function mountTerminalTyping(mount: HTMLElement): void {
   const finalPromptRow = rows[rows.length - 1] ?? null;
   const cursor = body.querySelector<HTMLElement>(".cursor");
 
-  let timer: ReturnType<typeof setTimeout> | null = null;
+  const timer = createTimer();
+  const introFallback = createTimers();
   let stepIdx = 0;
   let charIdx = 0;
   let phase: "typing" | "output" | "done" = "typing";
@@ -89,15 +91,8 @@ export function mountTerminalTyping(mount: HTMLElement): void {
   const rootCl = document.documentElement.classList;
   let held = rootCl.contains("intro-pending") || rootCl.contains("intro-run");
 
-  function clearTimer(): void {
-    if (timer !== null) {
-      clearTimeout(timer);
-      timer = null;
-    }
-  }
-
   function showAllInstantly(): void {
-    clearTimer();
+    timer.clear();
     phase = "done";
     document.documentElement.classList.remove("terminal-typing-init");
     for (const s of steps) {
@@ -118,7 +113,7 @@ export function mountTerminalTyping(mount: HTMLElement): void {
   }
 
   function resetAnimation(): void {
-    clearTimer();
+    timer.clear();
     stepIdx = 0;
     charIdx = 0;
     phase = "typing";
@@ -140,7 +135,6 @@ export function mountTerminalTyping(mount: HTMLElement): void {
   }
 
   function stepTick(): void {
-    timer = null;
     if (!isMotionOn()) {
       showAllInstantly();
       return;
@@ -161,10 +155,10 @@ export function mountTerminalTyping(mount: HTMLElement): void {
       if (charIdx < current.fullInput.length) {
         charIdx++;
         current.inputSpan.textContent = current.fullInput.slice(0, charIdx);
-        timer = setTimeout(stepTick, 20);
+        timer.set(stepTick, 20);
       } else {
         phase = "output";
-        timer = setTimeout(stepTick, 95);
+        timer.set(stepTick, 95);
       }
     } else if (phase === "output") {
       current.outputRow.style.visibility = "visible";
@@ -172,7 +166,7 @@ export function mountTerminalTyping(mount: HTMLElement): void {
       charIdx = 0;
       if (stepIdx < steps.length) {
         phase = "typing";
-        timer = setTimeout(stepTick, 140);
+        timer.set(stepTick, 140);
       } else {
         showAllInstantly();
       }
@@ -185,12 +179,12 @@ export function mountTerminalTyping(mount: HTMLElement): void {
       const release = (): void => {
         if (!held) return;
         held = false;
-        if (visible && phase !== "done" && timer === null) timer = setTimeout(stepTick, 120);
+        if (visible && phase !== "done" && !timer.pending) timer.set(stepTick, 120);
       };
       window.addEventListener("intro:done", release, { once: true });
-      setTimeout(release, 7000); // the intro never ran: don't leave the terminal blank
+      introFallback.after(release, 7000); // the intro never ran: don't leave the terminal blank
     } else {
-      timer = setTimeout(stepTick, 90);
+      timer.set(stepTick, 90);
     }
   } else {
     showAllInstantly();
@@ -199,9 +193,9 @@ export function mountTerminalTyping(mount: HTMLElement): void {
   isVisible(mount, (v) => {
     visible = v;
     if (!v) {
-      clearTimer();
-    } else if (!held && isMotionOn() && phase !== "done" && timer === null) {
-      timer = setTimeout(stepTick, 50);
+      timer.clear();
+    } else if (!held && isMotionOn() && phase !== "done" && !timer.pending) {
+      timer.set(stepTick, 50);
     }
   });
 

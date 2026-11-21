@@ -6,15 +6,6 @@ import globals from "globals";
 const RAW_TIMER_MESSAGE =
   "Use `createTimers()` from `src/lib/timers` so pending timers are cancelled on teardown.";
 
-// Baseline: files that still call setTimeout directly. Remove a file from
-// this list when it moves to `createTimers()`; never add to it.
-const RAW_TIMER_BASELINE = [
-  "src/fx/terminal-typing.ts",
-  "src/fx/erl-shell.ts",
-  "src/scripts/scroll-rail.ts",
-  "src/scripts/site.ts",
-  "src/scripts/intro.ts",
-];
 
 // Baseline: files that still use non-null assertions (`!`). Required today by
 // noUncheckedIndexedAccess on arrays and canvas contexts; shrink per file.
@@ -88,9 +79,5 @@ export default tseslint.config(
     // Pre-paint inline script: plain ES5 on purpose, it runs before any bundle.
     files: ["**/Base.astro/**"],
     rules: { "no-var": "off", "no-empty": "off", "@typescript-eslint/no-unused-vars": "off" },
-  },
-  {
-    files: RAW_TIMER_BASELINE,
-    rules: { "no-restricted-globals": "off", "no-restricted-properties": "off" },
   },
 );

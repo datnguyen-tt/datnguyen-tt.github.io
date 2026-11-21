@@ -8,6 +8,7 @@
  * rendered underneath (fixed overlay: no CLS, no layout work). Any key,
  * click, wheel or touch skips straight to the page.
  */
+import { sleep } from "../lib/timers";
 import { onMotionChange } from "./motion";
 
 type Kind = "in" | "out" | "ok" | "err" | "muted" | "warn";
@@ -111,9 +112,6 @@ const STEPS: Step[] = [
   },
 ];
 
-const wait = (ms: number): Promise<void> =>
-  new Promise((r) => setTimeout(r, ms));
-
 /** Card centres published by the BEAM mesh, in viewport coordinates. */
 function meshAnchors(): Map<string, { x: number; y: number }> {
   const out = new Map<string, { x: number; y: number }>();
@@ -191,15 +189,15 @@ function run(): void {
       for (let i = 1; i <= step.cmd.length; i++) {
         if (done) return;
         input.textContent = step.cmd.slice(0, i);
-        await wait(TYPE_MS + (i % 9 === 0 ? 20 : 0));
+        await sleep(TYPE_MS + (i % 9 === 0 ? 20 : 0));
       }
-      await wait(STEP_PAUSE_MS);
+      await sleep(STEP_PAUSE_MS);
       for (const make of step.out) {
         if (done) return;
         screen.append(make());
-        await wait(LINE_MS);
+        await sleep(LINE_MS);
       }
-      await wait(step.pause ?? STEP_PAUSE_MS);
+      await sleep(step.pause ?? STEP_PAUSE_MS);
     }
     if (!done) await handOff();
   }
@@ -209,7 +207,7 @@ function run(): void {
     // The mesh chunk loads lazily; give it a moment to publish its cards.
     let anchors = meshAnchors();
     for (let t = 0; anchors.size === 0 && t < 8 && !done; t++) {
-      await wait(75);
+      await sleep(75);
       anchors = meshAnchors();
     }
     if (done) return;
@@ -269,7 +267,7 @@ function run(): void {
 
   /** Resolves when `anim` finishes, or after `ms` if the timeline is frozen. */
   function settle(anim: Animation, ms: number): Promise<unknown> {
-    return Promise.race([anim.finished, wait(ms + 250)]);
+    return Promise.race([anim.finished, sleep(ms + 250)]);
   }
 
   skip.addEventListener("click", finish, { signal: ctl.signal });

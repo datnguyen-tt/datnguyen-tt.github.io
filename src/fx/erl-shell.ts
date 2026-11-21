@@ -1,3 +1,4 @@
+import { createTimer, createTimers } from "../lib/timers";
 import { isMotionOn, isVisible, onMotionChange } from "../scripts/motion";
 
 /** Commands the idle prompt types and erases, in a loop. */
@@ -125,7 +126,8 @@ export function mountErlShell(mount: HTMLElement): void {
     bar.appendChild(hint);
   }
 
-  let demoTimer = 0;
+  const demoTimer = createTimer();
+  const hireTimers = createTimers();
   let demoIdx = 0;
   let demoChars = 0;
   let deleting = false;
@@ -133,7 +135,6 @@ export function mountErlShell(mount: HTMLElement): void {
   const idle = (): boolean => !input.value && document.activeElement !== input;
 
   const demoTick = (): void => {
-    demoTimer = 0;
     if (cursor && cursor.parentElement !== ghost) ghost.appendChild(cursor);
     const showGhost = idle();
     field.classList.toggle("is-idle", showGhost);
@@ -163,14 +164,13 @@ export function mountErlShell(mount: HTMLElement): void {
       }
     }
     ghostText.textContent = word.slice(0, demoChars);
-    demoTimer = window.setTimeout(demoTick, wait);
+    demoTimer.set(demoTick, wait);
   };
   const demoKick = (): void => {
-    if (!demoTimer) demoTick();
+    if (!demoTimer.pending) demoTick();
   };
   const demoStop = (): void => {
-    clearTimeout(demoTimer);
-    demoTimer = 0;
+    demoTimer.clear();
     field.classList.remove("is-idle");
   };
   input.addEventListener("focus", demoStop);
@@ -185,14 +185,10 @@ export function mountErlShell(mount: HTMLElement): void {
   isVisible(field, (v) => {
     onScreen = v;
     if (v) demoKick();
-    else {
-      clearTimeout(demoTimer);
-      demoTimer = 0;
-    }
+    else demoTimer.clear();
   });
   onMotionChange(() => {
-    clearTimeout(demoTimer);
-    demoTimer = 0;
+    demoTimer.clear();
     demoKick();
   });
   demoKick();
@@ -405,7 +401,7 @@ export function mountErlShell(mount: HTMLElement): void {
       return { lines: [["ok"]] };
     },
     hire: () => {
-      window.setTimeout(() => {
+      hireTimers.after(() => {
         location.href = `mailto:${data.email}`;
       }, 400);
       return { lines: [[tx.hire]] };

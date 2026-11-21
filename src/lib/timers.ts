@@ -19,3 +19,36 @@ export function createTimers(): Timers {
     },
   };
 }
+
+export interface Timer {
+  readonly pending: boolean;
+  set(fn: () => void, ms: number): void;
+  clear(): void;
+}
+
+/** A single re-armable timer: `set` replaces any pending callback. */
+export function createTimer(): Timer {
+  let id: ReturnType<typeof setTimeout> | null = null;
+  return {
+    get pending() {
+      return id !== null;
+    },
+    set(fn, ms) {
+      if (id !== null) clearTimeout(id);
+      id = setTimeout(() => {
+        id = null;
+        fn();
+      }, ms);
+    },
+    clear() {
+      if (id !== null) clearTimeout(id);
+      id = null;
+    },
+  };
+}
+
+export function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}

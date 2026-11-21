@@ -1,6 +1,7 @@
 /* Scroll route: a cyan packet travels a rail of section nodes as the page
    scrolls; the "ping(hero@cv)" button routes the packet back to the top.
    The active section comes from the shared scroll-spy in site.ts. */
+import { createTimer } from "../lib/timers";
 import { isMotionOn } from "./motion";
 
 const PING = "ping(hero@cv)";
@@ -46,11 +47,11 @@ if (rail && nav && packet && top && code && live && hero) {
   // flight or its pong is showing (`busy`), the button stays up.
   let heroVisible = true;
   let busy = false;
-  let hideTimer = 0;
+  const hideTimer = createTimer();
   const sync = (): void => {
     const away = !heroVisible;
     rail.toggleAttribute("data-on", away);
-    clearTimeout(hideTimer);
+    hideTimer.clear();
     if (away) {
       top.hidden = false;
       requestAnimationFrame(() => top.setAttribute("data-show", ""));
@@ -58,7 +59,7 @@ if (rail && nav && packet && top && code && live && hero) {
     }
     if (busy) return;
     top.removeAttribute("data-show");
-    hideTimer = window.setTimeout(() => {
+    hideTimer.set(() => {
       if (!top.hasAttribute("data-show")) top.hidden = true;
     }, HIDE_MS);
   };
@@ -68,7 +69,8 @@ if (rail && nav && packet && top && code && live && hero) {
   }).observe(hero);
 
   // --- Click: scroll to top, then answer with a pong.
-  let resetTimer = 0;
+  const resetTimer = createTimer();
+  const fallbackTimer = createTimer();
   let pending: (() => void) | null = null;
   const cancel = (): void => {
     pending?.();
@@ -84,8 +86,7 @@ if (rail && nav && packet && top && code && live && hero) {
     code.textContent = PONG;
     live.textContent = `${top.dataset["label"] ?? ""}: ${PONG}`;
     busy = true;
-    clearTimeout(resetTimer);
-    resetTimer = window.setTimeout(() => {
+    resetTimer.set(() => {
       top.removeAttribute("data-state");
       code.textContent = PING;
       live.textContent = "";
@@ -110,7 +111,7 @@ if (rail && nav && packet && top && code && live && hero) {
       if (scrollY <= 2) pong();
       else settle();
     };
-    const fallback = window.setTimeout(finish, 2000);
+    fallbackTimer.set(finish, 2000);
     const abort = (): void => {
       cancel();
       settle();
@@ -120,7 +121,7 @@ if (rail && nav && packet && top && code && live && hero) {
     addEventListener("touchstart", abort, { once: true, passive: true });
     addEventListener("keydown", abort, { once: true });
     pending = () => {
-      clearTimeout(fallback);
+      fallbackTimer.clear();
       removeEventListener("scrollend", finish);
       removeEventListener("wheel", abort);
       removeEventListener("touchstart", abort);
